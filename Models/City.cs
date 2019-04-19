@@ -4,5 +4,8 @@ namespace TodoApi.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        // public string ImagePath { get;set;}
+
+        // public Status Status { get; set;}
     }
 }

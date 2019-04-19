@@ -27,12 +27,6 @@ namespace eatklik
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddCors(options =>
-            //     {
-            //         options.AddPolicy("AllowOrigin",
-            //                 builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod().AllowCredentials());
-            //     });
-
             services.AddDbContext<Context>(opt => opt.UseInMemoryDatabase("Eatklik"));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
@@ -53,7 +47,6 @@ namespace eatklik
             app.UseCors(builder =>
             {
                 builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-              ;
             });      
 
             app.UseHttpsRedirection();
