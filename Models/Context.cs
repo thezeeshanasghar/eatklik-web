@@ -10,5 +10,6 @@ namespace TodoApi.Models
         }
 
         public DbSet<City> Cities { get; set; }
+        public DbSet<Rider> Riders { get; set; }
     }
 }
