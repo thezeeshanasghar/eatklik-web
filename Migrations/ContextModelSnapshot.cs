@@ -31,6 +31,26 @@ namespace eatklik.Migrations
                     b.ToTable("Cities");
                 });
 
+            modelBuilder.Entity("eatklik.Models.Promotion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("PromoType");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("URL");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Promotions");
+                });
+
             modelBuilder.Entity("eatklik.Models.Rider", b =>
                 {
                     b.Property<long>("Id")
