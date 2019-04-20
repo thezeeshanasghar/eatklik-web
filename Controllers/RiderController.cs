@@ -1,9 +1,9 @@
+using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TodoApi.Models;
 
 namespace TodoApi.Controllers
 {
@@ -17,13 +17,13 @@ namespace TodoApi.Controllers
         {
             _db = context;
 
-            if (_db.Riders.Count() == 0)
-            {
-                // Create a new TodoItem if collection is empty,
-                // which means you can't delete all TodoItems.
-                _db.Riders.Add(new Rider { Name = "riders" });
-                _db.SaveChanges();
-            }
+            // if (_db.Riders.Count() == 0)
+            // {
+            //     // Create a new TodoItem if collection is empty,
+            //     // which means you can't delete all TodoItems.
+            //     _db.Riders.Add(new Rider { Name = "riders", CityId = 1 });
+            //     _db.SaveChanges();
+            // }
         }
 
 
@@ -86,6 +86,22 @@ namespace TodoApi.Controllers
             await _db.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("{id}/city")]
+        public async Task<ActionResult<City>> GetRiderCity(long id)
+        {
+            var rider = await _db.Riders.Include(x=> x.City).FirstOrDefaultAsync(x=> x.Id==id);
+            // _db.Entry(rider)
+            //     .Reference(b => b.City)
+            //     .Load();
+
+            if (rider == null)
+            {
+                return NotFound();
+            }
+
+            return rider.City;
         }
     }
 }

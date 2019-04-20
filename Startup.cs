@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using eatklik.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using TodoApi.Models;
 
 namespace eatklik
 {
@@ -27,8 +27,9 @@ namespace eatklik
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<Context>(opt => opt.UseInMemoryDatabase("Eatklik"));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDbContext<Context>(options => options.UseSqlite("Data Source=blogging.db"));
+
+            services.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
         }
 
@@ -47,7 +48,7 @@ namespace eatklik
             app.UseCors(builder =>
             {
                 builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-            });      
+            });
 
             app.UseHttpsRedirection();
             app.UseMvc();

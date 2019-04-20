@@ -1,9 +1,9 @@
+using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TodoApi.Models;
 
 namespace TodoApi.Controllers
 {
@@ -19,22 +19,17 @@ namespace TodoApi.Controllers
 
             if (_db.Cities.Count() == 0)
             {
-                // Create a new TodoItem if collection is empty,
-                // which means you can't delete all TodoItems.
                 _db.Cities.Add(new City { Name = "Isb" });
                 _db.SaveChanges();
             }
         }
 
-
-        // GET: api/Todo
         [HttpGet]
         public async Task<ActionResult<IEnumerable<City>>> GetAll()
         {
             return await _db.Cities.ToListAsync();
         }
 
-        // GET: api/Todo/5
         [HttpGet("{id}")]
         public async Task<ActionResult<City>> GetSingle(long id)
         {
@@ -47,7 +42,7 @@ namespace TodoApi.Controllers
 
             return todoItem;
         }
-        // POST: api/Todo
+
         [HttpPost]
         public async Task<ActionResult<City>> Post(City city)
         {
