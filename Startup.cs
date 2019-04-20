@@ -29,7 +29,8 @@ namespace eatklik
         {
             services.AddDbContext<Context>(options => options.UseSqlite("Data Source=blogging.db"));
 
-            services.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //services.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
             services.AddCors();
         }
 
