@@ -11,7 +11,7 @@ namespace eatklik.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySQL:AutoIncrement", true),
                     Name = table.Column<string>(nullable: true),
                     ImagePath = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false)
@@ -26,7 +26,7 @@ namespace eatklik.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySQL:AutoIncrement", true),
                     Name = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false)
@@ -41,7 +41,7 @@ namespace eatklik.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySQL:AutoIncrement", true),
                     Name = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true),
                     URL = table.Column<string>(nullable: true),
@@ -65,7 +65,7 @@ namespace eatklik.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySQL:AutoIncrement", true),
                     Name = table.Column<string>(nullable: true),
                     CityId = table.Column<long>(nullable: false),
                     ImagePath = table.Column<string>(nullable: true),

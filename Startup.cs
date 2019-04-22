@@ -15,6 +15,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using MySql.Data.EntityFrameworkCore;
+using MySql.Data.EntityFrameworkCore.Extensions;
 
 namespace eatklik
 {
@@ -30,8 +32,8 @@ namespace eatklik
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<Context>(options => options.UseSqlite("Data Source=blogging.db"));
-
+            // services.AddDbContext<Context>(options => options.UseSqlite("Data Source=blogging.db"));
+            services.AddDbContext<Context>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             //services.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMvc();
             services.AddCors();
