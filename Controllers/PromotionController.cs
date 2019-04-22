@@ -15,21 +15,26 @@ namespace TodoApi.Controllers
 
         public PromotionController(Context context)
         {
-            //     _db = context;
+            _db = context;
 
-            //     if (_db.Promotions.Count() == 0)
-            //     {
-            //         _db.Promotions.Add(new Promotion { Name = "Isb" });
-            //         _db.SaveChanges();
-            //     }
+            // if (_db.Riders.Count() == 0)
+            // {
+            //     // Create a new TodoItem if collection is empty,
+            //     // which means you can't delete all TodoItems.
+            //     _db.Riders.Add(new Rider { Name = "riders", CityId = 1 });
+            //     _db.SaveChanges();
+            // }
         }
 
+
+        // GET: api/Todo
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Promotion>>> GetAll()
         {
             return await _db.Promotions.ToListAsync();
         }
 
+        // GET: api/Todo/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Promotion>> GetSingle(long id)
         {
@@ -42,14 +47,14 @@ namespace TodoApi.Controllers
 
             return todoItem;
         }
-
+        // POST: api/Todo
         [HttpPost]
-        public async Task<ActionResult<Promotion>> Post(Promotion Name)
+        public async Task<ActionResult<Promotion>> Post(Promotion name)
         {
-            _db.Promotions.Add(Name);
+            _db.Promotions.Add(name);
             await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetSingle), new { id = Name.Id }, Name);
+            return CreatedAtAction(nameof(GetSingle), new { id = name.Id }, name);
         }
 
 
@@ -70,17 +75,33 @@ namespace TodoApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTodoItem(long id)
         {
-            var Name = await _db.Promotions.FindAsync(id);
+            var name = await _db.Promotions.FindAsync(id);
 
-            if (Name == null)
+            if (name == null)
             {
                 return NotFound();
             }
 
-            _db.Promotions.Remove(Name);
+            _db.Promotions.Remove(name);
             await _db.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("{id}/city")]
+        public async Task<ActionResult<City>> GetPromotionCity(long id)
+        {
+            var promotion = await _db.Promotions.Include(x => x.City).FirstOrDefaultAsync(x => x.Id == id);
+            // _db.Entry(rider)
+            //     .Reference(b => b.City)
+            //     .Load();
+
+            if (promotion == null)
+            {
+                return NotFound();
+            }
+
+            return promotion.City;
         }
     }
 }
