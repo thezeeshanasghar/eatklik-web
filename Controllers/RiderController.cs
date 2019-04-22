@@ -1,104 +1,80 @@
-using eatklik.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using eatklik.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace TodoApi.Controllers
-{
-    [Route("api/[controller]")]
+namespace TodoApi.Controllers {
+
+    [Route ("api/[controller]")]
     [ApiController]
-    public class RiderController : ControllerBase
-    {
+    public class RiderController : ControllerBase {
         private readonly Context _db;
 
-        public RiderController(Context context)
-        {
+        public RiderController (Context context) {
             _db = context;
-
-            // if (_db.Riders.Count() == 0)
-            // {
-            //     // Create a new TodoItem if collection is empty,
-            //     // which means you can't delete all TodoItems.
-            //     _db.Riders.Add(new Rider { Name = "riders", CityId = 1 });
-            //     _db.SaveChanges();
-            // }
         }
 
-
-        // GET: api/Todo
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Rider>>> GetAll()
-        {
-            return await _db.Riders.ToListAsync();
+        public async Task<ActionResult<IEnumerable<Rider>>> GetAll () {
+            return await _db.Riders.ToListAsync ();
         }
 
-        // GET: api/Todo/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Rider>> GetSingle(long id)
-        {
-            var todoItem = await _db.Riders.FindAsync(id);
+        [HttpGet ("{id}")]
+        public async Task<ActionResult<Rider>> GetSingle (long id) {
+            var todoItem = await _db.Riders.FindAsync (id);
 
-            if (todoItem == null)
-            {
-                return NotFound();
+            if (todoItem == null) {
+                return NotFound ();
             }
 
             return todoItem;
         }
-        // POST: api/Todo
+        
         [HttpPost]
-        public async Task<ActionResult<Rider>> Post(Rider city)
-        {
-            _db.Riders.Add(city);
-            await _db.SaveChangesAsync();
+        public async Task<ActionResult<Rider>> Post (Rider city) {
+            _db.Riders.Add (city);
+            await _db.SaveChangesAsync ();
 
-            return CreatedAtAction(nameof(GetSingle), new { id = city.Id }, city);
+            return CreatedAtAction (nameof (GetSingle), new { id = city.Id }, city);
         }
 
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, Rider Name)
-        {
-            if (id != Name.Id)
-            {
-                return BadRequest();
+        [HttpPut ("{id}")]
+        public async Task<IActionResult> Put (long id, Rider Name) {
+            if (id != Name.Id) {
+                return BadRequest ();
             }
 
-            _db.Entry(Name).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
+            _db.Entry (Name).State = EntityState.Modified;
+            await _db.SaveChangesAsync ();
 
-            return NoContent();
+            return NoContent ();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
-        {
-            var name = await _db.Riders.FindAsync(id);
+        [HttpDelete ("{id}")]
+        public async Task<IActionResult> DeleteTodoItem (long id) {
+            var name = await _db.Riders.FindAsync (id);
 
-            if (name == null)
-            {
-                return NotFound();
+            if (name == null) {
+                return NotFound ();
             }
 
-            _db.Riders.Remove(name);
-            await _db.SaveChangesAsync();
+            _db.Riders.Remove (name);
+            await _db.SaveChangesAsync ();
 
-            return NoContent();
+            return NoContent ();
         }
 
-        [HttpGet("{id}/city")]
-        public async Task<ActionResult<City>> GetRiderCity(long id)
-        {
-            var rider = await _db.Riders.Include(x=> x.City).FirstOrDefaultAsync(x=> x.Id==id);
+        [HttpGet ("{id}/city")]
+        public async Task<ActionResult<City>> GetRiderCity (long id) {
+            var rider = await _db.Riders.Include (x => x.City).FirstOrDefaultAsync (x => x.Id == id);
             // _db.Entry(rider)
             //     .Reference(b => b.City)
             //     .Load();
 
-            if (rider == null)
-            {
-                return NotFound();
+            if (rider == null) {
+                return NotFound ();
             }
 
             return rider.City;

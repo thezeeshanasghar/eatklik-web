@@ -2,7 +2,7 @@
 
 namespace eatklik.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,12 +42,12 @@ namespace eatklik.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CityId = table.Column<long>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true),
-                    PromoType = table.Column<int>(nullable: false),
                     URL = table.Column<string>(nullable: true),
-                    Status = table.Column<int>(nullable: false)
+                    Status = table.Column<int>(nullable: false),
+                    PromoType = table.Column<int>(nullable: false),
+                    CityId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,7 +57,7 @@ namespace eatklik.Migrations
                         column: x => x.CityId,
                         principalTable: "Cities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
