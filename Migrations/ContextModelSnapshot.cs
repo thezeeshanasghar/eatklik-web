@@ -71,6 +71,22 @@ namespace eatklik.Migrations
                     b.ToTable("Riders");
                 });
 
+            modelBuilder.Entity("eatklik.Models.Setting", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("eatklik.Models.Rider", b =>
                 {
                     b.HasOne("eatklik.Models.City", "City")

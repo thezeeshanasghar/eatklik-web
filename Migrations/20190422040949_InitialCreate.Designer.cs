@@ -8,7 +8,7 @@ using eatklik.Models;
 namespace eatklik.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190420185825_InitialCreate")]
+    [Migration("20190422040949_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,6 +71,22 @@ namespace eatklik.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("Riders");
+                });
+
+            modelBuilder.Entity("eatklik.Models.Setting", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("eatklik.Models.Rider", b =>
