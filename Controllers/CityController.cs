@@ -5,7 +5,7 @@ using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace TodoApi.Controllers {
+namespace eatklik.Controllers {
     
     [Route ("api/[controller]")]
     [ApiController]
