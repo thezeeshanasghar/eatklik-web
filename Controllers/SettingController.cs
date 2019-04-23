@@ -5,67 +5,76 @@ using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace eatklik.Controllers {
+namespace eatklik.Controllers
+{
 
-    [Route ("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class SettingController : ControllerBase {
+    public class SettingController : ControllerBase
+    {
         private readonly Context _db;
 
-        public SettingController (Context context) {
+        public SettingController(Context context)
+        {
             _db = context;
         }
 
-        // GET: api/Todo
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Setting>>> GetAll () {
-            return await _db.Settings.ToListAsync ();
+        public async Task<ActionResult<IEnumerable<Setting>>> GetAll()
+        {
+            return await _db.Settings.ToListAsync();
         }
 
-        // GET: api/Todo/5
-        [HttpGet ("{id}")]
-        public async Task<ActionResult<Setting>> GetSingle (long id) {
-            var todoItem = await _db.Settings.FindAsync (id);
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Setting>> GetSingle(long id)
+        {
+            var setting = await _db.Settings.FindAsync(id);
 
-            if (todoItem == null) {
-                return NotFound ();
+            if (setting == null)
+            {
+                return NotFound();
             }
 
-            return todoItem;
+            return setting;
         }
-        // POST: api/Todo
+
         [HttpPost]
-        public async Task<ActionResult<Setting>> Post (Setting name) {
-            _db.Settings.Add (name);
-            await _db.SaveChangesAsync ();
+        public async Task<ActionResult<Setting>> Post(Setting setting)
+        {
+            _db.Settings.Add(setting);
+            await _db.SaveChangesAsync();
 
-            return CreatedAtAction (nameof (GetSingle), new { id = name.Id }, name);
+            return CreatedAtAction(nameof(GetSingle), new { id = setting.Id }, setting);
         }
 
-        [HttpPut ("{id}")]
-        public async Task<IActionResult> Put (long id, Setting Name) {
-            if (id != Name.Id) {
-                return BadRequest ();
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(long id, Setting setting)
+        {
+            if (id != setting.Id)
+            {
+                return BadRequest();
             }
 
-            _db.Entry (Name).State = EntityState.Modified;
-            await _db.SaveChangesAsync ();
+            _db.Entry(setting).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
 
-            return NoContent ();
+            return NoContent();
         }
 
-        [HttpDelete ("{id}")]
-        public async Task<IActionResult> DeleteTodoItem (long id) {
-            var name = await _db.Settings.FindAsync (id);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTodoItem(long id)
+        {
+            var setting = await _db.Settings.FindAsync(id);
 
-            if (name == null) {
-                return NotFound ();
+            if (setting == null)
+            {
+                return NotFound();
             }
 
-            _db.Settings.Remove (name);
-            await _db.SaveChangesAsync ();
+            _db.Settings.Remove(setting);
+            await _db.SaveChangesAsync();
 
-            return NoContent ();
+            return NoContent();
         }
     }
 }

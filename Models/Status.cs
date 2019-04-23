@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace eatklik.Models {
+namespace eatklik.Models
+{
 
-    public enum Status {
+    public enum Status
+    {
         Enable,
         Disable
     }

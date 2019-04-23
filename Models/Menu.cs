@@ -3,17 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eatklik.Models
 {
-
-    public class Rider
+    public class Menu
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public string MobileNo { get; set; }
-        public string Password { get; set; }
+        public string ImagePath { get; set; }
         public Status Status { get; set; }
 
-        public long CityId { get; set; }
-        public City City { get; set; }
+        public ICollection<MenuItem> MenuItems { get; set; }
+        public long RestaurantId { get; set; }
+        public Restaurant Restaurant { get; set; }
     }
 
 }
