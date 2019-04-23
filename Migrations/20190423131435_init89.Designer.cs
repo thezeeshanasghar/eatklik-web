@@ -9,8 +9,8 @@ using eatklik.Models;
 namespace eatklik.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190423081020_add-relationship-menu-menuiteam")]
-    partial class addrelationshipmenumenuiteam
+    [Migration("20190423131435_init89")]
+    partial class init89
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,7 +47,7 @@ namespace eatklik.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cuisine");
+                    b.ToTable("Cuisines");
                 });
 
             modelBuilder.Entity("eatklik.Models.Customer", b =>
@@ -73,7 +73,43 @@ namespace eatklik.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("eatklik.Models.Menu", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Menus");
+                });
+
+            modelBuilder.Entity("eatklik.Models.MenuItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ImagePath");
+
+                    b.Property<long>("MenuId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long>("Price");
+
+                    b.Property<int>("Size");
+
+                    b.Property<int>("Status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenuId");
+
+                    b.ToTable("MenuItems");
                 });
 
             modelBuilder.Entity("eatklik.Models.Promotion", b =>
@@ -123,7 +159,7 @@ namespace eatklik.Migrations
 
                     b.HasIndex("RestaurantLocationId");
 
-                    b.ToTable("Restaurant");
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("eatklik.Models.RestaurantContact", b =>
@@ -139,7 +175,7 @@ namespace eatklik.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RestaurantContact");
+                    b.ToTable("RestaurantContacts");
                 });
 
             modelBuilder.Entity("eatklik.Models.RestaurantCuisine", b =>
@@ -172,7 +208,7 @@ namespace eatklik.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("RestaurantLocation");
+                    b.ToTable("RestaurantLocations");
                 });
 
             modelBuilder.Entity("eatklik.Models.RestaurantTiming", b =>
@@ -192,7 +228,7 @@ namespace eatklik.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("RestaurantTiming");
+                    b.ToTable("RestaurantTimings");
                 });
 
             modelBuilder.Entity("eatklik.Models.Review", b =>
@@ -216,7 +252,7 @@ namespace eatklik.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Review");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("eatklik.Models.Rider", b =>
@@ -260,6 +296,14 @@ namespace eatklik.Migrations
                     b.HasOne("eatklik.Models.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("eatklik.Models.MenuItem", b =>
+                {
+                    b.HasOne("eatklik.Models.Menu", "Menu")
+                        .WithMany()
+                        .HasForeignKey("MenuId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
