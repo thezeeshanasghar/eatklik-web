@@ -31,31 +31,27 @@ namespace eatklik.Controllers
             var todoItem = await _db.Riders.FindAsync(id);
 
             if (todoItem == null)
-            {
                 return NotFound();
-            }
 
             return todoItem;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Rider>> Post(Rider city)
+        public async Task<ActionResult<Rider>> Post(Rider rider)
         {
-            _db.Riders.Add(city);
+            _db.Riders.Update(rider);
             await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetSingle), new { id = city.Id }, city);
+            return CreatedAtAction(nameof(GetSingle), new { id = rider.Id }, rider);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, Rider Name)
+        public async Task<IActionResult> Put(long id, Rider rider)
         {
-            if (id != Name.Id)
-            {
+            if (id != rider.Id)
                 return BadRequest();
-            }
 
-            _db.Entry(Name).State = EntityState.Modified;
+            _db.Entry(rider).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 
             return NoContent();
@@ -65,11 +61,8 @@ namespace eatklik.Controllers
         public async Task<IActionResult> DeleteTodoItem(long id)
         {
             var name = await _db.Riders.FindAsync(id);
-
             if (name == null)
-            {
                 return NotFound();
-            }
 
             _db.Riders.Remove(name);
             await _db.SaveChangesAsync();
@@ -81,14 +74,8 @@ namespace eatklik.Controllers
         public async Task<ActionResult<City>> GetRiderCity(long id)
         {
             var rider = await _db.Riders.Include(x => x.City).FirstOrDefaultAsync(x => x.Id == id);
-            // _db.Entry(rider)
-            //     .Reference(b => b.City)
-            //     .Load();
-
             if (rider == null)
-            {
                 return NotFound();
-            }
 
             return rider.City;
         }

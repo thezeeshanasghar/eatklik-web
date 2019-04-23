@@ -10,47 +10,47 @@ namespace eatklik.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class CityController : ControllerBase
+    public class CuisineController : ControllerBase
     {
         private readonly Context _db;
 
-        public CityController(Context context)
+        public CuisineController(Context context)
         {
             _db = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<City>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Cuisine>>> GetAll()
         {
-            return await _db.Cities.ToListAsync();
+            return await _db.Cuisines.ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<City>> GetSingle(long id)
+        public async Task<ActionResult<Cuisine>> GetSingle(long id)
         {
-            var todoItem = await _db.Cities.FindAsync(id);
-            if (todoItem == null)
+            var cuisine = await _db.Cuisines.FindAsync(id);
+            if (cuisine == null)
                 return NotFound();
 
-            return todoItem;
+            return cuisine;
         }
 
         [HttpPost]
-        public async Task<ActionResult<City>> Post(City city)
+        public async Task<ActionResult<Cuisine>> Post(Cuisine Cuisine)
         {
-            _db.Cities.Update(city);
+            _db.Cuisines.Update(Cuisine);
             await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetSingle), new { id = city.Id }, city);
+            return CreatedAtAction(nameof(GetSingle), new { id = Cuisine.Id }, Cuisine);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, City city)
+        public async Task<IActionResult> Put(long id, Cuisine Cuisine)
         {
-            if (id != city.Id)
+            if (id != Cuisine.Id)
                 return BadRequest();
 
-            _db.Entry(city).State = EntityState.Modified;
+            _db.Entry(Cuisine).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 
             return NoContent();
@@ -59,12 +59,12 @@ namespace eatklik.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTodoItem(long id)
         {
-            var city = await _db.Cities.FindAsync(id);
+            var Cuisine = await _db.Cuisines.FindAsync(id);
 
-            if (city == null)
+            if (Cuisine == null)
                 return NotFound();
 
-            _db.Cities.Remove(city);
+            _db.Cuisines.Remove(Cuisine);
             await _db.SaveChangesAsync();
 
             return NoContent();

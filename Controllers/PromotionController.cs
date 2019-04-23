@@ -5,78 +5,76 @@ using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace eatklik.Controllers {
+namespace eatklik.Controllers
+{
 
-    [Route ("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class PromotionController : ControllerBase {
+    public class PromotionController : ControllerBase
+    {
         private readonly Context _db;
 
-        public PromotionController (Context context) {
+        public PromotionController(Context context)
+        {
             _db = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Promotion>>> GetAll () {
-            return await _db.Promotions.ToListAsync ();
+        public async Task<ActionResult<IEnumerable<Promotion>>> GetAll()
+        {
+            return await _db.Promotions.ToListAsync();
         }
 
-        [HttpGet ("{id}")]
-        public async Task<ActionResult<Promotion>> GetSingle (long id) {
-            var todoItem = await _db.Promotions.FindAsync (id);
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Promotion>> GetSingle(long id)
+        {
+            var promotion = await _db.Promotions.FindAsync(id);
+            if (promotion == null)
+                return NotFound();
 
-            if (todoItem == null) {
-                return NotFound ();
-            }
-
-            return todoItem;
+            return promotion;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Promotion>> Post (Promotion promotion) {
+        public async Task<ActionResult<Promotion>> Post(Promotion promotion)
+        {
+            _db.Promotions.Update(promotion);
+            await _db.SaveChangesAsync();
 
-            _db.Promotions.Add (promotion);
-            await _db.SaveChangesAsync ();
-
-            return CreatedAtAction (nameof (GetSingle), new { id = promotion.Id }, promotion);
+            return CreatedAtAction(nameof(GetSingle), new { id = promotion.Id }, promotion);
         }
 
-        [HttpPut ("{id}")]
-        public async Task<IActionResult> Put (long id, Promotion promotion) {
-            if (id != promotion.Id) {
-                return BadRequest ();
-            }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(long id, Promotion promotion)
+        {
+            if (id != promotion.Id)
+                return BadRequest();
 
-            _db.Entry (promotion).State = EntityState.Modified;
-            await _db.SaveChangesAsync ();
+            _db.Entry(promotion).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
 
-            return NoContent ();
+            return NoContent();
         }
 
-        [HttpDelete ("{id}")]
-        public async Task<IActionResult> DeleteTodoItem (long id) {
-            var promotion = await _db.Promotions.FindAsync (id);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTodoItem(long id)
+        {
+            var promotion = await _db.Promotions.FindAsync(id);
+            if (promotion == null)
+                return NotFound();
 
-            if (promotion == null) {
-                return NotFound ();
-            }
+            _db.Promotions.Remove(promotion);
+            await _db.SaveChangesAsync();
 
-            _db.Promotions.Remove (promotion);
-            await _db.SaveChangesAsync ();
-
-            return NoContent ();
+            return NoContent();
         }
 
-        [HttpGet ("{id}/city")]
-        public async Task<ActionResult<City>> GetPromotionCity (long id) {
-            var promotion = await _db.Promotions.Include (x => x.City).FirstOrDefaultAsync (x => x.Id == id);
-            // _db.Entry(rider)
-            //     .Reference(b => b.City)
-            //     .Load();
-
-            if (promotion == null) {
-                return NotFound ();
-            }
+        [HttpGet("{id}/city")]
+        public async Task<ActionResult<City>> GetPromotionCity(long id)
+        {
+            var promotion = await _db.Promotions.Include(x => x.City).FirstOrDefaultAsync(x => x.Id == id);
+            if (promotion == null)
+                return NotFound();
 
             return promotion.City;
         }

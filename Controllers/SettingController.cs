@@ -29,11 +29,8 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Setting>> GetSingle(long id)
         {
             var setting = await _db.Settings.FindAsync(id);
-
             if (setting == null)
-            {
                 return NotFound();
-            }
 
             return setting;
         }
@@ -41,7 +38,7 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Setting>> Post(Setting setting)
         {
-            _db.Settings.Add(setting);
+            _db.Settings.Update(setting);
             await _db.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetSingle), new { id = setting.Id }, setting);
@@ -51,9 +48,7 @@ namespace eatklik.Controllers
         public async Task<IActionResult> Put(long id, Setting setting)
         {
             if (id != setting.Id)
-            {
                 return BadRequest();
-            }
 
             _db.Entry(setting).State = EntityState.Modified;
             await _db.SaveChangesAsync();
@@ -65,11 +60,8 @@ namespace eatklik.Controllers
         public async Task<IActionResult> DeleteTodoItem(long id)
         {
             var setting = await _db.Settings.FindAsync(id);
-
             if (setting == null)
-            {
                 return NotFound();
-            }
 
             _db.Settings.Remove(setting);
             await _db.SaveChangesAsync();
