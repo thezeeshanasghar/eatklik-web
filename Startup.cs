@@ -17,6 +17,7 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using MySql.Data.EntityFrameworkCore;
 using MySql.Data.EntityFrameworkCore.Extensions;
+using Newtonsoft.Json.Serialization;
 
 namespace eatklik
 {
@@ -35,7 +36,8 @@ namespace eatklik
             // services.AddDbContext<Context>(options => options.UseSqlite("Data Source=blogging.db"));
             services.AddDbContext<Context>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             //services.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddMvc();
+            services.AddMvc()
+                    .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddCors();
         }
 
