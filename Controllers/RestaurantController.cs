@@ -69,5 +69,41 @@ namespace eatklik.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("{id}/location")]
+        public async Task<ActionResult<ICollection<RestaurantLocation>>> GetLocations(long id)
+        {
+            // var restaurant = await _db.Restaurants.FindAsync(id);
+            var restaurant = await _db.Restaurants.Include(x => x.RestaurantLocations).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (restaurant == null)
+                return NotFound();
+
+            return Ok(restaurant.RestaurantLocations);
+        }
+
+        [HttpGet("{id}/contact")]
+        public async Task<ActionResult<ICollection<RestaurantContact>>> GetContacts(long id)
+        {
+            // var restaurant = await _db.Restaurants.FindAsync(id);
+            var restaurant = await _db.Restaurants.Include(x => x.RestaurantContacts).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (restaurant == null)
+                return NotFound();
+
+            return Ok(restaurant.RestaurantContacts);
+        }
+
+        [HttpGet("{id}/timing")]
+        public async Task<ActionResult<ICollection<RestaurantTiming>>> GetTimings(long id)
+        {
+            // var restaurant = await _db.Restaurants.FindAsync(id);
+            var restaurant = await _db.Restaurants.Include(x => x.RestaurantTimings).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (restaurant == null)
+                return NotFound();
+
+            return Ok(restaurant.RestaurantTimings);
+        }
     }
 }

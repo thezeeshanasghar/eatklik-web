@@ -19,12 +19,6 @@ namespace eatklik.Controllers
             _db = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<RestaurantContact>>> GetAll()
-        {
-            return await _db.RestaurantContacts.ToListAsync();
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<RestaurantContact>> GetSingle(long id)
         {

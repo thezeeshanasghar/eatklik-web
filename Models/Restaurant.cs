@@ -15,17 +15,15 @@ namespace eatklik.Models
         public string LogoImagePath { get; set; }
         public string CoverImagePath { get; set; }
 
-        public ICollection<RestaurantCuisine> RestaurantCuisines { get; set; }
+        public virtual ICollection<RestaurantCuisine> RestaurantCuisines { get; set; }
 
-        public long RestaurantLocationId { get; set; }
-        public RestaurantLocation RestaurantLocation { get; set; }
+        public virtual ICollection<RestaurantLocation> RestaurantLocations { get; set; }
 
-        public ICollection<RestaurantTiming> RestaurantTimings { get; set; }
+        public virtual ICollection<RestaurantTiming> RestaurantTimings { get; set; }
 
-        public long RestaurantContactId { get; set; }
-        public RestaurantContact RestaurantContact { get; set; }
+        public virtual ICollection<RestaurantContact> RestaurantContacts { get; set; }
 
-        public ICollection<Review> CustomrReviews {get;set;}
+        public virtual ICollection<Review> CustomrReviews {get;set;}
 
     }
 

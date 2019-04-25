@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace eatklik.Models
 {
@@ -9,6 +10,11 @@ namespace eatklik.Models
         public string Email { get; set; }
         public string MobileNo { get; set; }
         public string URL { get; set; }
+
+        
+        public long RestaurantId { get; set; }
+        [JsonIgnore]
+        public Restaurant Restaurant { get; set; }
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace eatklik.Migrations
 {
-    public partial class init89 : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -37,31 +37,21 @@ namespace eatklik.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Menus",
+                name: "Restaurants",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySQL:AutoIncrement", true),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    MinOrderPrice = table.Column<long>(nullable: false),
+                    MaxOrderPrice = table.Column<long>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    LogoImagePath = table.Column<string>(nullable: true),
+                    CoverImagePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Menus", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RestaurantContacts",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySQL:AutoIncrement", true),
-                    Email = table.Column<string>(nullable: true),
-                    MobileNo = table.Column<string>(nullable: true),
-                    URL = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RestaurantContacts", x => x.Id);
+                    table.PrimaryKey("PK_Restaurants", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -126,28 +116,6 @@ namespace eatklik.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RestaurantLocations",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySQL:AutoIncrement", true),
-                    Address = table.Column<string>(nullable: true),
-                    latitude = table.Column<long>(nullable: false),
-                    longitude = table.Column<long>(nullable: false),
-                    CityId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RestaurantLocations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RestaurantLocations_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Riders",
                 columns: table => new
                 {
@@ -171,57 +139,45 @@ namespace eatklik.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MenuItems",
+                name: "Menus",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySQL:AutoIncrement", true),
                     Name = table.Column<string>(nullable: true),
                     ImagePath = table.Column<string>(nullable: true),
-                    Size = table.Column<int>(nullable: false),
-                    Price = table.Column<long>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    MenuId = table.Column<long>(nullable: false)
+                    RestaurantId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MenuItems", x => x.Id);
+                    table.PrimaryKey("PK_Menus", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MenuItems_Menus_MenuId",
-                        column: x => x.MenuId,
-                        principalTable: "Menus",
+                        name: "FK_Menus_Restaurants_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Restaurants",
+                name: "RestaurantContacts",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySQL:AutoIncrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    MinOrderPrice = table.Column<long>(nullable: false),
-                    MaxOrderPrice = table.Column<long>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    LogoImagePath = table.Column<string>(nullable: true),
-                    CoverImagePath = table.Column<string>(nullable: true),
-                    RestaurantLocationId = table.Column<long>(nullable: false),
-                    RestaurantContactId = table.Column<long>(nullable: false)
+                    Email = table.Column<string>(nullable: true),
+                    MobileNo = table.Column<string>(nullable: true),
+                    URL = table.Column<string>(nullable: true),
+                    RestaurantId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Restaurants", x => x.Id);
+                    table.PrimaryKey("PK_RestaurantContacts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Restaurants_RestaurantContacts_RestaurantContactId",
-                        column: x => x.RestaurantContactId,
-                        principalTable: "RestaurantContacts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Restaurants_RestaurantLocations_RestaurantLocationId",
-                        column: x => x.RestaurantLocationId,
-                        principalTable: "RestaurantLocations",
+                        name: "FK_RestaurantContacts_Restaurants_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -251,6 +207,35 @@ namespace eatklik.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RestaurantLocations",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySQL:AutoIncrement", true),
+                    Address = table.Column<string>(nullable: true),
+                    Latitude = table.Column<long>(nullable: false),
+                    Longitude = table.Column<long>(nullable: false),
+                    CityId = table.Column<long>(nullable: false),
+                    RestaurantId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RestaurantLocations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RestaurantLocations_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RestaurantLocations_Restaurants_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RestaurantTimings",
                 columns: table => new
                 {
@@ -259,7 +244,7 @@ namespace eatklik.Migrations
                     WeekDay = table.Column<int>(nullable: false),
                     StartTime = table.Column<string>(nullable: true),
                     EndTime = table.Column<string>(nullable: true),
-                    RestaurantId = table.Column<long>(nullable: true)
+                    RestaurantId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -269,7 +254,7 @@ namespace eatklik.Migrations
                         column: x => x.RestaurantId,
                         principalTable: "Restaurants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -301,6 +286,30 @@ namespace eatklik.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MenuItems",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySQL:AutoIncrement", true),
+                    Name = table.Column<string>(nullable: true),
+                    ImagePath = table.Column<string>(nullable: true),
+                    Size = table.Column<int>(nullable: false),
+                    Price = table.Column<long>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    MenuId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MenuItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MenuItems_Menus_MenuId",
+                        column: x => x.MenuId,
+                        principalTable: "Menus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_CityId",
                 table: "Customers",
@@ -312,9 +321,19 @@ namespace eatklik.Migrations
                 column: "MenuId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Menus_RestaurantId",
+                table: "Menus",
+                column: "RestaurantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Promotions_CityId",
                 table: "Promotions",
                 column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RestaurantContacts_RestaurantId",
+                table: "RestaurantContacts",
+                column: "RestaurantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RestaurantCuisine_CuisineId",
@@ -327,14 +346,9 @@ namespace eatklik.Migrations
                 column: "CityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Restaurants_RestaurantContactId",
-                table: "Restaurants",
-                column: "RestaurantContactId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Restaurants_RestaurantLocationId",
-                table: "Restaurants",
-                column: "RestaurantLocationId");
+                name: "IX_RestaurantLocations_RestaurantId",
+                table: "RestaurantLocations",
+                column: "RestaurantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RestaurantTimings_RestaurantId",
@@ -366,7 +380,13 @@ namespace eatklik.Migrations
                 name: "Promotions");
 
             migrationBuilder.DropTable(
+                name: "RestaurantContacts");
+
+            migrationBuilder.DropTable(
                 name: "RestaurantCuisine");
+
+            migrationBuilder.DropTable(
+                name: "RestaurantLocations");
 
             migrationBuilder.DropTable(
                 name: "RestaurantTimings");
@@ -391,12 +411,6 @@ namespace eatklik.Migrations
 
             migrationBuilder.DropTable(
                 name: "Restaurants");
-
-            migrationBuilder.DropTable(
-                name: "RestaurantContacts");
-
-            migrationBuilder.DropTable(
-                name: "RestaurantLocations");
 
             migrationBuilder.DropTable(
                 name: "Cities");
