@@ -97,13 +97,22 @@ namespace eatklik.Controllers
         [HttpGet("{id}/timing")]
         public async Task<ActionResult<ICollection<RestaurantTiming>>> GetTimings(long id)
         {
-            // var restaurant = await _db.Restaurants.FindAsync(id);
             var restaurant = await _db.Restaurants.Include(x => x.RestaurantTimings).FirstOrDefaultAsync(x => x.Id == id);
 
             if (restaurant == null)
                 return NotFound();
 
             return Ok(restaurant.RestaurantTimings);
+        }
+
+        [HttpGet("{id}/cuisine")]
+        public async Task<ActionResult<ICollection<RestaurantCuisine>>> GetCuisines(long id)
+        {
+            var restaurant = await _db.Restaurants.Include(x => x.RestaurantCuisines).FirstOrDefaultAsync(x => x.Id == id);
+            if (restaurant == null)
+                return NotFound();
+
+            return Ok(restaurant.RestaurantCuisines);
         }
     }
 }
