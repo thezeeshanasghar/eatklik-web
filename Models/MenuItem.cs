@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace eatklik.Models
 {
@@ -13,6 +14,7 @@ namespace eatklik.Models
         public Status Status { get; set; }
 
         public long MenuId {get;set;}
+        [JsonIgnore]
         public Menu Menu {get;set;} 
     }
 
