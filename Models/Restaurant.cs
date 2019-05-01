@@ -22,6 +22,7 @@ namespace eatklik.Models
         public virtual ICollection<RestaurantTiming> RestaurantTimings { get; set; }
 
         public virtual ICollection<RestaurantContact> RestaurantContacts { get; set; }
+        public virtual ICollection<Menu> RestaurantMenus { get; set; }
 
         public virtual ICollection<Review> CustomrReviews {get;set;}
 

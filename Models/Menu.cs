@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace eatklik.Models
 {
@@ -12,6 +13,7 @@ namespace eatklik.Models
 
         public ICollection<MenuItem> MenuItems { get; set; }
         public long RestaurantId { get; set; }
+        [JsonIgnore]
         public Restaurant Restaurant { get; set; }
     }
 
