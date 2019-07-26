@@ -23,6 +23,7 @@ namespace eatklik.Models
         public DbSet<RestaurantTiming> RestaurantTimings { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CouponCode> CouponCodes { get; set; }
+         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

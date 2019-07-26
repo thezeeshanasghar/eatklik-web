@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -78,6 +79,23 @@ namespace eatklik.Controllers
                 return NotFound();
 
             return rider.City;
+        }
+
+        [HttpPost("login")]
+        public Response<Rider> Login(Rider postedRider)
+        {
+            try
+            {
+                var dbRider = _db.Riders.FirstOrDefault(x => x.MobileNo == postedRider.MobileNo
+                && x.Password == postedRider.Password);
+                if (dbRider == null)
+                    return new Response<Rider>(false, "Invalid Mobile Number or Password.", null);
+                return new Response<Rider>(true, null, postedRider);
+            }
+            catch (Exception ex)
+            {
+                return new Response<Rider>(false, ex.Message, null);
+            }
         }
     }
 }
