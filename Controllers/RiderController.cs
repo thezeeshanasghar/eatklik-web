@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using eatklik.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace eatklik.Controllers
 {
@@ -14,10 +18,12 @@ namespace eatklik.Controllers
     public class RiderController : ControllerBase
     {
         private readonly Context _db;
+        private IHostingEnvironment _env;
 
-        public RiderController(Context context)
+        public RiderController(Context context, IHostingEnvironment env)
         {
             _db = context;
+            this._env = env;
         }
 
         [HttpGet]
@@ -90,7 +96,52 @@ namespace eatklik.Controllers
                 && x.Password == postedRider.Password);
                 if (dbRider == null)
                     return new Response<Rider>(false, "Invalid Mobile Number or Password.", null);
-                return new Response<Rider>(true, null, postedRider);
+
+                if (dbRider.ProfileImage == null)
+                {
+                    // var imgPath = Directory.GetFiles("~/Content/RiderImages/avatar.png");
+                    dbRider.ProfileImage = "avatar.png";
+                }
+                return new Response<Rider>(true, null, dbRider);
+            }
+            catch (Exception ex)
+            {
+                return new Response<Rider>(false, ex.Message, null);
+            }
+        }
+
+        [HttpPut("edit-profile/{id}")]
+        public async Task<Response<Rider>> UpdateProfileAsync(int id)
+        {
+            try
+            {
+                var dbRider = _db.Riders.FirstOrDefault(x => x.Id == id);
+                if (dbRider == null)
+                    return new Response<Rider>(false, "Invalid Access.", null);
+
+                var httpRequest = HttpContext.Request.Form["rider"];
+                Rider postedRider = JsonConvert.DeserializeObject<Rider>(httpRequest);
+
+                string imageName = null;
+                if (HttpContext.Request.Form.Files.Count > 0)
+                {
+                    var postedFile = HttpContext.Request.Form.Files[0];
+                    imageName = new string(Path.GetFileNameWithoutExtension(postedFile.FileName).Take(10).ToArray()).Replace(" ", "-");
+                    imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(postedFile.FileName);
+                    var filePath = Path.Combine(_env.ContentRootPath, "Content\\RiderImages");
+
+                    using (var fileStream = new FileStream(Path.Combine(filePath, imageName), FileMode.Create))
+                    {
+                        await postedFile.CopyToAsync(fileStream);
+                        dbRider.ProfileImage = imageName;
+                    }
+                }
+                dbRider.Name = postedRider.Name;
+                dbRider.MobileNo = postedRider.MobileNo;
+                dbRider.Password = postedRider.Password;
+                _db.Entry(dbRider).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+                return new Response<Rider>(true, null, dbRider);
             }
             catch (Exception ex)
             {

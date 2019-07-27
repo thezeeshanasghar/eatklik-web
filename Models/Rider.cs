@@ -10,6 +10,7 @@ namespace eatklik.Models
         public string Name { get; set; }
         public string MobileNo { get; set; }
         public string Password { get; set; }
+        public string ProfileImage { get; set; }
         public Status Status { get; set; }
 
         public long CityId { get; set; }
