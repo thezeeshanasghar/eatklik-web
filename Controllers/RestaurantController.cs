@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using eatklik.DTOs;
 using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +16,12 @@ namespace eatklik.Controllers
     public class RestaurantController : ControllerBase
     {
         private readonly Context _db;
+        private readonly IMapper _mapper;
 
-        public RestaurantController(Context context)
+        public RestaurantController(Context context, IMapper mapper)
         {
             _db = context;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -123,6 +128,39 @@ namespace eatklik.Controllers
                 return NotFound();
 
             return Ok(restaurant.RestaurantMenus);
+        }
+
+        [HttpGet("{id}/restaurant-details")]
+        public async Task<Response<RestaurantDTO>> GetRestaurantDetails(long id)
+        {
+            try
+            {
+                var restaurant = await _db.Restaurants.Include(x => x.RestaurantMenus).Include(x => x.RestaurantCuisines).FirstOrDefaultAsync(x => x.Id == id);
+                if (restaurant == null)
+                    return new Response<RestaurantDTO>(false, "Not Found", null);
+
+                List<Menu> menus = new List<Menu>();
+                foreach (var menu in restaurant.RestaurantMenus)
+                {
+                    var dbMenu = await _db.Menus.Include(x => x.MenuItems).FirstOrDefaultAsync(x => x.Id == menu.Id);
+                    menus.Add(dbMenu);
+                }
+                restaurant.RestaurantMenus = menus;
+                List<Cuisine> cuisines = new List<Cuisine>();
+                foreach(var restCuisine in restaurant.RestaurantCuisines) {
+                    Cuisine cuisine = await _db.Cuisines.Where(x=>x.Id == restCuisine.CuisineId).FirstOrDefaultAsync<Cuisine>();
+                    cuisines.Add(cuisine);
+                }
+               
+                RestaurantDTO restaurantDto = _mapper.Map<RestaurantDTO>(restaurant);
+                restaurantDto.cuisines = _mapper.Map<List<CuisineDTO>>(cuisines);
+                return new Response<RestaurantDTO>(true, null, restaurantDto);
+
+            }
+            catch (Exception ex)
+            {
+                return new Response<RestaurantDTO>(false, ex.Message, null);
+            }
         }
     }
 }
