@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,5 +70,23 @@ namespace eatklik.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("login")]
+        public Response<Customer> Login(Customer postedCustomer)
+        {
+            try
+            {
+                var dbCustomer = _db.Customers.FirstOrDefault(x => x.Email == postedCustomer.Email
+                && x.Password == postedCustomer.Password);
+                if (dbCustomer == null)
+                    return new Response<Customer>(false, "Invalid Email or Password.", null);
+                return new Response<Customer>(true, null, dbCustomer);
+            }
+            catch (Exception ex)
+            {
+                return new Response<Customer>(false, ex.Message, null);
+            }
+        }
     }
+
 }
