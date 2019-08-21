@@ -23,12 +23,16 @@ namespace eatklik.Models
         public DbSet<RestaurantTiming> RestaurantTimings { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CouponCode> CouponCodes { get; set; }
-         public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RestaurantCuisine>()
                 .HasKey(bc => new { bc.RestaurantId, bc.CuisineId });
+            modelBuilder.Entity<OrderItem>()
+           .HasKey(bc => new { bc.Id });
         }
     }
 }

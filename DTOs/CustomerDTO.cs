@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
-namespace eatklik.Models
+namespace eatklik.DTOs
 {
 
-    public class Customer
+    public class CustomerDTO
     {
         public long Id { get; set; }
         public string Name {get;set;}
@@ -12,12 +13,12 @@ namespace eatklik.Models
         public string Password { get; set; }
         public string ImagePath {get;set;}
         public string Address {get;set;}
-        public Status Status {get;set;}
+        public StatusDTO Status {get;set;}
         public long CityId {get;set;}
-        public City City {get;set;}
+        public CityDTO City {get;set;}
+        public ICollection<ReviewDTO> RestaurantReviews {get;set;}
+        public ICollection<OrderDTO> CustomerOrders {get;set;}
 
-        public virtual ICollection<Review> RestaurantReviews {get;set;}
-        public virtual ICollection<Order> CustomerOrders {get;set;}
     }
 
 }
