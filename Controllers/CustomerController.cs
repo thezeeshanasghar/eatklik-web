@@ -27,13 +27,12 @@ namespace eatklik.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetSingle(long id)
+        public async Task<Response<Customer>> GetSingle(long id)
         {
             var Customer = await _db.Customers.FindAsync(id);
             if (Customer == null)
-                return NotFound();
-
-            return Customer;
+                return new Response<Customer>(false, "Invalid Email or Password.", null);
+            return new Response<Customer>(true, null, Customer);
         }
 
         [HttpPost]
