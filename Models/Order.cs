@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace eatklik.Models
 {
@@ -11,6 +13,9 @@ namespace eatklik.Models
         public long Fee { get; set; }
         public long GST { get; set; }
         public long GrandTotal { get; set; }
+        public DateTime Created { get; set; }
+        public string Status { get; set; }
+        [JsonIgnore]
         public Customer Customer { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }

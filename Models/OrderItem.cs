@@ -12,6 +12,7 @@ namespace eatklik.Models
         public long Price {get;set;}
         public long Quantity {get;set;}
         public long Total {get;set;}
+        [JsonIgnore]
         public virtual Order Order {get;set;} 
     }
 

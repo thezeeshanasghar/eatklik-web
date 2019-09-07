@@ -38,7 +38,10 @@ namespace eatklik
             services.AddDbContext<Context>(options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
             //services.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMvc()
-                    .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+                    .AddJsonOptions(
+                        options => options.SerializerSettings.ContractResolver = new DefaultContractResolver()
+                        // options =>   options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                        );
             services.AddCors();
             // Auto Mapper Configurations
             var mappingConfig = new MapperConfiguration(mc =>

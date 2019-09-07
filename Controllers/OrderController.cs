@@ -24,6 +24,23 @@ namespace eatklik.Controllers
             this._mapper = mapper;
         }
 
+        
+        [HttpGet]
+        public async Task<Response<IEnumerable<OrderDTO>>> GetAll()
+        {
+            try
+            {
+                var dbOrders = await _db.Orders.ToListAsync();
+                List<OrderDTO> orders = _mapper.Map<List<OrderDTO>>(dbOrders);
+                return new Response<IEnumerable<OrderDTO>>(true, null, orders);
+
+            }
+            catch (Exception ex)
+            {
+                return new Response<IEnumerable<OrderDTO>>(false, ex.Message, null);
+            }
+        }
+
         [HttpPost("customer-order")]
         public Response<OrderDTO> PostCustomerOrder(OrderDTO postedOrder)
         {
@@ -31,11 +48,12 @@ namespace eatklik.Controllers
             {
                 Customer customer = _db.Customers.Where(x => x.Id == postedOrder.CustomerId).FirstOrDefault();
                 Order order = new Order();
+                order = _mapper.Map<Order>(postedOrder);                
                 order.Customer = customer;
-                order = _mapper.Map<Order>(postedOrder);   
-                 _db.Orders.Add(order);
-                 _db.SaveChanges();
-                 //TODO: Problem in creating more than one order
+                order.Created = DateTime.Now;
+                order.Status = AppVariables.Pending;
+                _db.Orders.Add(order);
+                _db.SaveChanges();
                 return new Response<OrderDTO>(true, null, postedOrder);
 
             }
@@ -44,5 +62,6 @@ namespace eatklik.Controllers
                 return new Response<OrderDTO>(false, ex.Message, null);
             }
         }
+
     }
 }

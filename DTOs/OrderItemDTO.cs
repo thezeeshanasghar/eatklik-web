@@ -13,6 +13,7 @@ namespace eatklik.DTOs
         public long Price {get;set;}
         public long Quantity {get;set;}
         public long Total {get;set;}
+        [JsonIgnore]
         public OrderDTO Order {get;set;} 
     }
 

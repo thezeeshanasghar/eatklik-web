@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using eatklik.DTOs;
 using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +16,12 @@ namespace eatklik.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly Context _db;
+        private readonly IMapper _mapper;
 
-        public CustomerController(Context context)
+        public CustomerController(Context context, IMapper mapper)
         {
             _db = context;
+             this._mapper = mapper;
         }
 
         [HttpGet]
@@ -31,7 +35,7 @@ namespace eatklik.Controllers
         {
             var Customer = await _db.Customers.FindAsync(id);
             if (Customer == null)
-                return new Response<Customer>(false, "Invalid Email or Password.", null);
+                return new Response<Customer>(false, "Invalid Id", null);
             return new Response<Customer>(true, null, Customer);
         }
 
@@ -86,6 +90,21 @@ namespace eatklik.Controllers
                 return new Response<Customer>(false, ex.Message, null);
             }
         }
+      
+        [HttpGet("{customerId}/orders")]
+        public async Task<Response<IEnumerable<OrderDTO>>> GetCustomerOrders(int customerId) {
+             try
+            {
+                var dbCustomer = await _db.Customers.Include(x=>x.CustomerOrders).ThenInclude(x=>x.OrderItems).FirstOrDefaultAsync(x=>x.Id == customerId);
+                List<OrderDTO> orders = _mapper.Map<List<OrderDTO>>(dbCustomer.CustomerOrders);
+                return new Response<IEnumerable<OrderDTO>>(true, null, orders);
+
+            }
+            catch (Exception ex)
+            {
+                return new Response<IEnumerable<OrderDTO>>(false, ex.Message, null);
+            }
+        } 
     }
 
 }
