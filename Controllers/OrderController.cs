@@ -24,7 +24,7 @@ namespace eatklik.Controllers
             this._mapper = mapper;
         }
 
-        
+
         [HttpGet]
         public async Task<Response<IEnumerable<OrderDTO>>> GetAll()
         {
@@ -41,6 +41,23 @@ namespace eatklik.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<Response<OrderDTO>> GetSingle(int id)
+        {
+            try
+            {
+                var dbOrder = await _db.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
+                if (dbOrder == null)
+                    return new Response<OrderDTO>(false, "Not Found", null);
+                OrderDTO order = _mapper.Map<OrderDTO>(dbOrder);
+                return new Response<OrderDTO>(true, null, order);
+            }
+            catch (Exception ex)
+            {
+                return new Response<OrderDTO>(false, ex.Message, null);
+            }
+        }
+
         [HttpPost("customer-order")]
         public Response<OrderDTO> PostCustomerOrder(OrderDTO postedOrder)
         {
@@ -48,7 +65,7 @@ namespace eatklik.Controllers
             {
                 Customer customer = _db.Customers.Where(x => x.Id == postedOrder.CustomerId).FirstOrDefault();
                 Order order = new Order();
-                order = _mapper.Map<Order>(postedOrder);                
+                order = _mapper.Map<Order>(postedOrder);
                 order.Customer = customer;
                 order.Created = DateTime.Now;
                 order.Status = AppVariables.Pending;
