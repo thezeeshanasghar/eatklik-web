@@ -13,9 +13,10 @@ namespace eatklik.Models
         public long Price { get; set; }
         public Status Status { get; set; }
 
-        public long MenuId {get;set;}
+        public long MenuId { get; set; }
         [JsonIgnore]
-        public Menu Menu {get;set;} 
+        public Menu Menu { get; set; }
+        public ICollection<MenuExtraItem> MenuExtraItems { get; set; }
     }
 
     public enum ItemSize

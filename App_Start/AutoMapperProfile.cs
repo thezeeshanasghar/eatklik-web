@@ -20,6 +20,7 @@ namespace eatklik
             CreateMap<City, CityDTO>().ReverseMap();
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<Review, ReviewDTO>().ReverseMap();
+            CreateMap<MenuExtraItem, MenuExtraItemDTO>().ReverseMap();
         }
 
     }

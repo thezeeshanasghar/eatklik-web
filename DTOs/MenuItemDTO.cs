@@ -13,6 +13,7 @@ namespace eatklik.DTOs
         public long Price { get; set; }
         public StatusDTO Status { get; set; }
         public long MenuId { get; set; }
+        public ICollection<MenuExtraItemDTO> MenuExtraItems { get; set; }
 
         public enum ItemSize
         {

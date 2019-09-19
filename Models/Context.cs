@@ -26,6 +26,7 @@ namespace eatklik.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<MenuExtraItem> MenuExtraItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
