@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using eatklik.DTOs;
 using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,59 +25,34 @@ namespace eatklik.Controllers
 
 
         [HttpGet]
-        public async Task<Response<IEnumerable<OrderDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Order>>> GetAll()
         {
-            try
-            {
-                var dbOrders = await _db.Orders.ToListAsync();
-                List<OrderDTO> orders = _mapper.Map<List<OrderDTO>>(dbOrders);
-                return new Response<IEnumerable<OrderDTO>>(true, null, orders);
-
-            }
-            catch (Exception ex)
-            {
-                return new Response<IEnumerable<OrderDTO>>(false, ex.Message, null);
-            }
+            return await _db.Orders.ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<Response<OrderDTO>> GetSingle(int id)
+        public async Task<ActionResult<Order>> GetSingle(int id)
         {
-            try
-            {
-                var dbOrder = await _db.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
-                if (dbOrder == null)
-                    return new Response<OrderDTO>(false, "Not Found", null);
-                OrderDTO order = _mapper.Map<OrderDTO>(dbOrder);
-                return new Response<OrderDTO>(true, null, order);
-            }
-            catch (Exception ex)
-            {
-                return new Response<OrderDTO>(false, ex.Message, null);
-            }
+
+            var dbOrder = await _db.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
+            if (dbOrder == null)
+                return NotFound();
+            return dbOrder;
+
         }
 
         [HttpPost("customer-order")]
-        public Response<OrderDTO> PostCustomerOrder(OrderDTO postedOrder)
+        public async Task<ActionResult<City>> Post(Order postedOrder)
         {
-            try
-            {
-                Customer customer = _db.Customers.Where(x => x.Id == postedOrder.CustomerId).FirstOrDefault();
-                Order order = new Order();
-                order = _mapper.Map<Order>(postedOrder);
-                order.Customer = customer;
-                order.Created = DateTime.Now;
-                order.Status = AppVariables.Pending;
-                _db.Orders.Add(order);
-                _db.SaveChanges();
-                return new Response<OrderDTO>(true, null, postedOrder);
+            Customer customer = _db.Customers.Where(x => x.Id == postedOrder.CustomerId).FirstOrDefault();
 
-            }
-            catch (Exception ex)
-            {
-                return new Response<OrderDTO>(false, ex.Message, null);
-            }
+            postedOrder.Customer = customer;
+            postedOrder.Created = DateTime.Now;
+            postedOrder.Status = AppVariables.Pending;
+            _db.Orders.Add(postedOrder);
+            await _db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetSingle), new { id = postedOrder.Id }, postedOrder);
         }
-
     }
 }

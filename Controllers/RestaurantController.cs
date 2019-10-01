@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using eatklik.DTOs;
 using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +61,7 @@ namespace eatklik.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             var Restaurant = await _db.Restaurants.FindAsync(id);
 
@@ -131,13 +130,12 @@ namespace eatklik.Controllers
         }
 
         [HttpGet("{id}/restaurant-details")]
-        public async Task<Response<RestaurantDTO>> GetRestaurantDetails(long id)
+        public async Task<ActionResult<Restaurant>> GetRestaurantDetails(long id)
         {
-            try
-            {
+            
                 var restaurant = await _db.Restaurants.Include(x => x.RestaurantMenus).Include(x => x.RestaurantCuisines).FirstOrDefaultAsync(x => x.Id == id);
                 if (restaurant == null)
-                    return new Response<RestaurantDTO>(false, "Not Found", null);
+                    return NotFound();
 
                 List<Menu> menus = new List<Menu>();
                 foreach (var menu in restaurant.RestaurantMenus)
@@ -152,15 +150,9 @@ namespace eatklik.Controllers
                     cuisines.Add(cuisine);
                 }
                
-                RestaurantDTO restaurantDto = _mapper.Map<RestaurantDTO>(restaurant);
-                restaurantDto.cuisines = _mapper.Map<List<CuisineDTO>>(cuisines);
-                return new Response<RestaurantDTO>(true, null, restaurantDto);
+                return restaurant;
 
-            }
-            catch (Exception ex)
-            {
-                return new Response<RestaurantDTO>(false, ex.Message, null);
-            }
+            
         }
     }
 }

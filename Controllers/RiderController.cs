@@ -65,7 +65,7 @@ namespace eatklik.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             var name = await _db.Riders.FindAsync(id);
             if (name == null)
@@ -88,36 +88,28 @@ namespace eatklik.Controllers
         }
 
         [HttpPost("login")]
-        public Response<Rider> Login(Rider postedRider)
+        public ActionResult<Rider> Login(Rider postedRider)
         {
-            try
-            {
                 var dbRider = _db.Riders.FirstOrDefault(x => x.MobileNo == postedRider.MobileNo
                 && x.Password == postedRider.Password);
                 if (dbRider == null)
-                    return new Response<Rider>(false, "Invalid Mobile Number or Password.", null);
+                    return NotFound();
 
                 if (dbRider.ProfileImage == null)
                 {
                     // var imgPath = Directory.GetFiles("~/Content/RiderImages/avatar.png");
                     dbRider.ProfileImage = "avatar.png";
                 }
-                return new Response<Rider>(true, null, dbRider);
-            }
-            catch (Exception ex)
-            {
-                return new Response<Rider>(false, ex.Message, null);
-            }
+                return dbRider;
+           
         }
 
         [HttpPut("edit-profile/{id}")]
-        public async Task<Response<Rider>> UpdateProfileAsync(int id)
+        public async Task<ActionResult<Rider>> UpdateProfileAsync(int id)
         {
-            try
-            {
                 var dbRider = _db.Riders.FirstOrDefault(x => x.Id == id);
                 if (dbRider == null)
-                    return new Response<Rider>(false, "Invalid Access.", null);
+                    return NotFound();
 
                 var httpRequest = HttpContext.Request.Form["rider"];
                 Rider postedRider = JsonConvert.DeserializeObject<Rider>(httpRequest);
@@ -141,12 +133,8 @@ namespace eatklik.Controllers
                 dbRider.Password = postedRider.Password;
                 _db.Entry(dbRider).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
-                return new Response<Rider>(true, null, dbRider);
-            }
-            catch (Exception ex)
-            {
-                return new Response<Rider>(false, ex.Message, null);
-            }
+                return dbRider;
+           
         }
     }
 }

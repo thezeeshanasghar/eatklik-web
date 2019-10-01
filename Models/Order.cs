@@ -17,6 +17,7 @@ namespace eatklik.Models
         public string Status { get; set; }
         [JsonIgnore]
         public Customer Customer { get; set; }
+        public long CustomerId { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 

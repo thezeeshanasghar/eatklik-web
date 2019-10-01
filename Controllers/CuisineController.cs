@@ -57,7 +57,7 @@ namespace eatklik.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             var Cuisine = await _db.Cuisines.FindAsync(id);
 

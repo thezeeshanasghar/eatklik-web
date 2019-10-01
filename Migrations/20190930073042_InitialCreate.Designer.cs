@@ -9,14 +9,14 @@ using eatklik.Models;
 namespace eatklik.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20190821151546_addOrderAndOrderItemsChanges")]
-    partial class addOrderAndOrderItemsChanges
+    [Migration("20190930073042_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity("eatklik.Models.City", b =>
                 {
@@ -83,6 +83,8 @@ namespace eatklik.Migrations
 
                     b.Property<string>("ImagePath");
 
+                    b.Property<string>("MobileNumber");
+
                     b.Property<string>("Name");
 
                     b.Property<string>("Password");
@@ -116,6 +118,26 @@ namespace eatklik.Migrations
                     b.ToTable("Menus");
                 });
 
+            modelBuilder.Entity("eatklik.Models.MenuExtraItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ImagePath");
+
+                    b.Property<long>("MenuItemId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long>("Price");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenuItemId");
+
+                    b.ToTable("MenuExtraItems");
+                });
+
             modelBuilder.Entity("eatklik.Models.MenuItem", b =>
                 {
                     b.Property<long>("Id")
@@ -145,6 +167,8 @@ namespace eatklik.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("Created");
+
                     b.Property<long?>("CustomerId");
 
                     b.Property<long>("Fee");
@@ -152,6 +176,8 @@ namespace eatklik.Migrations
                     b.Property<long>("GST");
 
                     b.Property<long>("GrandTotal");
+
+                    b.Property<string>("Status");
 
                     b.Property<long>("Subtotal");
 
@@ -402,6 +428,14 @@ namespace eatklik.Migrations
                     b.HasOne("eatklik.Models.Restaurant", "Restaurant")
                         .WithMany("RestaurantMenus")
                         .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("eatklik.Models.MenuExtraItem", b =>
+                {
+                    b.HasOne("eatklik.Models.MenuItem", "MenuItem")
+                        .WithMany("MenuExtraItems")
+                        .HasForeignKey("MenuItemId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
