@@ -1,18 +1,19 @@
-
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace eatklik.Models
 {
-    public class MenuExtraItem
+    public class RestaurantExtraItem
     {
         public long Id { get; set; }
         public string Name { get; set; }
         public long Price { get; set; }
         public string ImagePath { get; set; }
-        public long MenuItemId { get; set; }
-
+        
+        public long RestaurantId { get; set; }
         [JsonIgnore]
-        public virtual MenuItem MenuItem { get; set; }
-
+        public Restaurant Restaurant { get; set; }
     }
+
 }
