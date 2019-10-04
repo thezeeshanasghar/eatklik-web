@@ -119,6 +119,16 @@ namespace eatklik.Controllers
             return Ok(restaurant.RestaurantCuisines);
         }
 
+        [HttpGet("{id}/extraitem")]
+        public async Task<ActionResult<ICollection<RestaurantExtraItem>>> GetRestaurantExtraItem(long id)
+        {
+            var restaurant = await _db.Restaurants.Include(x => x.RestaurantExtraItems).FirstOrDefaultAsync(x => x.Id == id);
+            if (restaurant == null)
+                return NotFound();
+
+            return Ok(restaurant.RestaurantExtraItems);
+        }
+
         [HttpGet("{id}/menu")]
         public async Task<ActionResult<ICollection<Menu>>> GetMenus(long id)
         {
