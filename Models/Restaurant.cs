@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace eatklik.Models
 {
@@ -14,6 +15,10 @@ namespace eatklik.Models
 
         public string LogoImagePath { get; set; }
         public string CoverImagePath { get; set; }
+        public long CityId { get; set; }
+        
+        [JsonIgnore]
+        public City City { get; set; }
 
         public virtual ICollection<RestaurantCuisine> RestaurantCuisines { get; set; }
 

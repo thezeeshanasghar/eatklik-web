@@ -12,11 +12,6 @@ namespace eatklik.Models
         public long Latitude { get; set; }
         public long Longitude { get; set; }
 
-        public long CityId { get; set; }
-        [JsonIgnore]
-        public City City { get; set; }
-
-        
         public long RestaurantId { get; set; }
 
         [JsonIgnore]

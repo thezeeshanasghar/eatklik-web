@@ -131,6 +131,8 @@ namespace eatklik.Controllers
                 dbRider.Name = postedRider.Name;
                 dbRider.MobileNo = postedRider.MobileNo;
                 dbRider.Password = postedRider.Password;
+                dbRider.CNIC = postedRider.CNIC;
+                dbRider.Address = postedRider.Address;
                 _db.Entry(dbRider).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
                 return dbRider;
