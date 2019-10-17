@@ -9,8 +9,8 @@ using eatklik.Models;
 namespace eatklik.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20191017062231_InitialCreate2")]
-    partial class InitialCreate2
+    [Migration("20191017063218_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
