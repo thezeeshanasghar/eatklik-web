@@ -15,10 +15,25 @@ namespace eatklik.Models
         public long GST { get; set; }
         public long GrandTotal { get; set; }
         public DateTime Created { get; set; }
-        public string Status { get; set; }
+        public OrderStatus OrderStatus { get; set; }
+
+        public long CustomerId { get; set; }
         [JsonIgnore]
         public Customer Customer { get; set; }
-        public long CustomerId { get; set; }
+
+        public long CityId { get; set; }
+        [JsonIgnore]
+        public City City { get; set; }
+
+        public long RestaurantId { get; set; }
+        [JsonIgnore]
+        public Restaurant Restaurant { get; set; }
+
+        
+        public long RiderId { get; set; }
+        [JsonIgnore]
+        public Rider Rider { get; set; }
+
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 

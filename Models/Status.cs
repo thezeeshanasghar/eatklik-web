@@ -9,4 +9,13 @@ namespace eatklik.Models
         Enable,
         Disable
     }
+
+    
+    public enum OrderStatus
+    {
+        New,
+        Active,
+        Complete,
+        Cancel
+    }
 }
