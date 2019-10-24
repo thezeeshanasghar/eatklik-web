@@ -55,13 +55,13 @@ namespace eatklik.Controllers
             return CreatedAtAction(nameof(GetSingle), new { id = postedOrder.Id }, postedOrder);
         }
 
-        [HttpPut("{id}/order-status")]
-        public async Task<IActionResult> Put(long id, OrderStatus orderStatus)
+        [HttpPut("{id}/order-status/{status}")]
+        public async Task<IActionResult> Put(long id, int status)
         {
             var dbOrder = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
             if (dbOrder == null)
                 return NotFound();
-            dbOrder.OrderStatus = orderStatus;
+            dbOrder.OrderStatus = (OrderStatus) status;
             _db.Entry(dbOrder).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 
