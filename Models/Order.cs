@@ -30,9 +30,9 @@ namespace eatklik.Models
         public Restaurant Restaurant { get; set; }
 
         
-        public long RiderId { get; set; }
+        public long? RiderId { get; set; }
         [JsonIgnore]
-        public Rider Rider { get; set; }
+        public virtual Rider Rider { get; set; }
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
