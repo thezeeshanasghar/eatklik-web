@@ -56,12 +56,32 @@ namespace eatklik.Controllers
         }
 
         [HttpPut("{id}/order-status/{status}")]
-        public async Task<IActionResult> Put(long id, int status)
+        public async Task<IActionResult> UpdateOrderStatus(long id, int status)
         {
             var dbOrder = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
             if (dbOrder == null)
                 return NotFound();
             dbOrder.OrderStatus = (OrderStatus) status;
+            _db.Entry(dbOrder).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/order-rider/{rid}")]
+        public async Task<IActionResult> UpdateOrderRider(long id, int rid)
+        {
+            var dbOrder = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            if (dbOrder == null)
+                return NotFound();
+
+            var dbRider = await _db.Riders.FirstOrDefaultAsync(x => x.Id == rid);
+            if (dbRider == null)
+                return NotFound();
+
+            dbOrder.RiderId = rid;
+            dbOrder.Rider = dbRider;
+
             _db.Entry(dbOrder).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 
