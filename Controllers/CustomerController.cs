@@ -43,6 +43,16 @@ namespace eatklik.Controllers
 
             return Customer;
         }
+        
+        [HttpGet("city/{cityId}")]
+        public async Task<ActionResult<ICollection<Customer>>> GetCustomerByCity(int cityId)
+        {
+            var dbCustomers = await _db.Customers.Where(x => x.CityId == cityId).ToListAsync();
+            if (dbCustomers == null)
+                return NotFound();
+            return dbCustomers;
+
+        }
 
         [HttpPost]
         public async Task<ActionResult<Customer>> Post(Customer Customer)

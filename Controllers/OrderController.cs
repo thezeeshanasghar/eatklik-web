@@ -91,7 +91,6 @@ namespace eatklik.Controllers
         [HttpGet("city/{cityId}")]
         public async Task<ActionResult<ICollection<Order>>> GetOrderByCity(int cityId)
         {
-
             var dbOrders = await _db.Orders.Where(x => x.CityId == cityId).ToListAsync();
             if (dbOrders == null)
                 return NotFound();

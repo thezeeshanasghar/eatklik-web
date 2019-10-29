@@ -164,5 +164,15 @@ namespace eatklik.Controllers
 
             
         }
+
+          [HttpGet("city/{cityId}")]
+        public async Task<ActionResult<ICollection<Restaurant>>> GetRestaurantByCity(int cityId)
+        {
+            var dbRestaurants = await _db.Restaurants.Where(x => x.CityId == cityId).ToListAsync();
+            if (dbRestaurants == null)
+                return NotFound();
+            return dbRestaurants;
+
+        }
     }
 }

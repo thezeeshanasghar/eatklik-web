@@ -143,7 +143,6 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Rider>>> GetRiderByCity(long cityId)
         {
             var dbRiders = await _db.Riders.Where(x => x.CityId == cityId).ToListAsync();
-
             if (dbRiders == null)
                 return NotFound();
 
