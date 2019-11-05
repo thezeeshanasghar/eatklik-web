@@ -9,8 +9,8 @@ using eatklik.Models;
 namespace eatklik.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20191018115644_addFieldsInExtraItem")]
-    partial class addFieldsInExtraItem
+    [Migration("20191105071815_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -149,6 +149,8 @@ namespace eatklik.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<long>("CityId");
+
                     b.Property<DateTime>("Created");
 
                     b.Property<long>("CustomerId");
@@ -161,13 +163,23 @@ namespace eatklik.Migrations
 
                     b.Property<long>("GrandTotal");
 
-                    b.Property<string>("Status");
+                    b.Property<int>("OrderStatus");
+
+                    b.Property<long>("RestaurantId");
+
+                    b.Property<long?>("RiderId");
 
                     b.Property<long>("Subtotal");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.HasIndex("RiderId");
 
                     b.ToTable("Orders");
                 });
@@ -380,6 +392,8 @@ namespace eatklik.Migrations
 
                     b.Property<string>("ProfileImage");
 
+                    b.Property<int>("Rating");
+
                     b.Property<int>("Status");
 
                     b.HasKey("Id");
@@ -451,10 +465,24 @@ namespace eatklik.Migrations
 
             modelBuilder.Entity("eatklik.Models.Order", b =>
                 {
+                    b.HasOne("eatklik.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("eatklik.Models.Customer", "Customer")
                         .WithMany("CustomerOrders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eatklik.Models.Restaurant", "Restaurant")
+                        .WithMany()
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eatklik.Models.Rider", "Rider")
+                        .WithMany()
+                        .HasForeignKey("RiderId");
                 });
 
             modelBuilder.Entity("eatklik.Models.OrderItem", b =>

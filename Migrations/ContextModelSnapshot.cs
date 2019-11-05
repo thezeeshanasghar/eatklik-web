@@ -165,7 +165,7 @@ namespace eatklik.Migrations
 
                     b.Property<long>("RestaurantId");
 
-                    b.Property<long>("RiderId");
+                    b.Property<long?>("RiderId");
 
                     b.Property<long>("Subtotal");
 
@@ -390,6 +390,8 @@ namespace eatklik.Migrations
 
                     b.Property<string>("ProfileImage");
 
+                    b.Property<int>("Rating");
+
                     b.Property<int>("Status");
 
                     b.HasKey("Id");
@@ -478,8 +480,7 @@ namespace eatklik.Migrations
 
                     b.HasOne("eatklik.Models.Rider", "Rider")
                         .WithMany()
-                        .HasForeignKey("RiderId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RiderId");
                 });
 
             modelBuilder.Entity("eatklik.Models.OrderItem", b =>

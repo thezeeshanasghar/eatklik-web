@@ -97,5 +97,23 @@ namespace eatklik.Controllers
             return dbOrders;
 
         }
+        
+        [HttpGet("status/{orderStatus}")]
+        public async Task<ActionResult<ICollection<Order>>> GetOrderByStatus(int orderStatus)
+        {
+            var dbOrders = await _db.Orders.Where(x => x.OrderStatus == (OrderStatus)orderStatus).ToListAsync();
+            if (dbOrders == null)
+                return NotFound();
+            return dbOrders;
+        }
+        
+        [HttpGet("city/{cityId}/status/{orderStatus}")]
+        public async Task<ActionResult<ICollection<Order>>> GetOrderByCityAndStatus(int cityId, int orderStatus)
+        {
+            var dbOrders = await _db.Orders.Where(x => x.CityId == cityId && x.OrderStatus == (OrderStatus)orderStatus).ToListAsync();
+            if (dbOrders == null)
+                return NotFound();
+            return dbOrders;
+        }
     }
 }

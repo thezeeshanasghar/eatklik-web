@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace eatklik.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,6 +15,7 @@ namespace eatklik.Migrations
                         .Annotation("MySQL:AutoIncrement", true),
                     Name = table.Column<string>(nullable: true),
                     ImagePath = table.Column<string>(nullable: true),
+                    CoverImagePath = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -172,6 +173,7 @@ namespace eatklik.Migrations
                     Password = table.Column<string>(nullable: true),
                     ProfileImage = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
+                    Rating = table.Column<int>(nullable: false),
                     CityId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
@@ -181,32 +183,6 @@ namespace eatklik.Migrations
                         name: "FK_Riders_Cities_CityId",
                         column: x => x.CityId,
                         principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySQL:AutoIncrement", true),
-                    Subtotal = table.Column<long>(nullable: false),
-                    Fee = table.Column<long>(nullable: false),
-                    DeliveryCharges = table.Column<long>(nullable: false),
-                    GST = table.Column<long>(nullable: false),
-                    GrandTotal = table.Column<long>(nullable: false),
-                    Created = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<string>(nullable: true),
-                    CustomerId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -286,6 +262,7 @@ namespace eatklik.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySQL:AutoIncrement", true),
                     Name = table.Column<string>(nullable: true),
+                    Size = table.Column<string>(nullable: true),
                     Price = table.Column<long>(nullable: false),
                     ImagePath = table.Column<string>(nullable: true),
                     RestaurantId = table.Column<long>(nullable: false)
@@ -375,25 +352,48 @@ namespace eatklik.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderItems",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySQL:AutoIncrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    Size = table.Column<string>(nullable: true),
-                    Price = table.Column<long>(nullable: false),
-                    Quantity = table.Column<long>(nullable: false),
-                    Total = table.Column<long>(nullable: false),
-                    OrderId = table.Column<long>(nullable: true)
+                    Subtotal = table.Column<long>(nullable: false),
+                    Fee = table.Column<long>(nullable: false),
+                    DeliveryCharges = table.Column<long>(nullable: false),
+                    GST = table.Column<long>(nullable: false),
+                    GrandTotal = table.Column<long>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    OrderStatus = table.Column<int>(nullable: false),
+                    CustomerId = table.Column<long>(nullable: false),
+                    CityId = table.Column<long>(nullable: false),
+                    RestaurantId = table.Column<long>(nullable: false),
+                    RiderId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
+                        name: "FK_Orders_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Restaurants_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Riders_RiderId",
+                        column: x => x.RiderId,
+                        principalTable: "Riders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -422,6 +422,30 @@ namespace eatklik.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySQL:AutoIncrement", true),
+                    Name = table.Column<string>(nullable: true),
+                    Size = table.Column<string>(nullable: true),
+                    Price = table.Column<long>(nullable: false),
+                    Quantity = table.Column<long>(nullable: false),
+                    Total = table.Column<long>(nullable: false),
+                    OrderId = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_CityId",
                 table: "Customers",
@@ -443,9 +467,24 @@ namespace eatklik.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_CityId",
+                table: "Orders",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_RestaurantId",
+                table: "Orders",
+                column: "RestaurantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_RiderId",
+                table: "Orders",
+                column: "RiderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Promotions_CityId",
@@ -531,9 +570,6 @@ namespace eatklik.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "Riders");
-
-            migrationBuilder.DropTable(
                 name: "Settings");
 
             migrationBuilder.DropTable(
@@ -549,10 +585,13 @@ namespace eatklik.Migrations
                 name: "Cuisines");
 
             migrationBuilder.DropTable(
+                name: "Customers");
+
+            migrationBuilder.DropTable(
                 name: "Restaurants");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Riders");
 
             migrationBuilder.DropTable(
                 name: "Cities");

@@ -15,6 +15,7 @@ namespace eatklik.Models
     {
         New,
         Active,
+        Dispatch,
         Complete,
         Cancel
     }
