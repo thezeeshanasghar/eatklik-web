@@ -11,8 +11,9 @@ namespace eatklik.Models
         public string Name { get; set; }
         public long MinOrderPrice { get; set; }
         public long MaxOrderPrice { get; set; }
+        public long DelCharges { get; set; }
         public string Description { get; set; }
-
+        public Status Status { get; set; }
         public string LogoImagePath { get; set; }
         public string CoverImagePath { get; set; }
         public long CityId { get; set; }
