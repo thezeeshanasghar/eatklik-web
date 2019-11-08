@@ -59,6 +59,18 @@ namespace eatklik.Controllers
 
             return NoContent();
         }
+        [HttpPut("{id}/status/{status}")]
+        public async Task<IActionResult> UpdateRestaurantStatus(long id, int status)
+        {
+            var dbRestaurant = await _db.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            if (dbRestaurant == null)
+                return NotFound();
+            dbRestaurant.Status = (Status) status;
+            _db.Entry(dbRestaurant).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
