@@ -19,6 +19,7 @@ namespace eatklik.Models
 
         public long CityId { get; set; }
         public City City { get; set; }
+        public virtual ICollection<RiderRating> RiderRatings { get; set; }
     }
 
 }

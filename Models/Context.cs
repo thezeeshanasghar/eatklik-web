@@ -11,6 +11,7 @@ namespace eatklik.Models
         }
         public DbSet<City> Cities { get; set; }
         public DbSet<Rider> Riders { get; set; }
+        public DbSet<RiderRating> RiderRatings { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Cuisine> Cuisines { get; set; }

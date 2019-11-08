@@ -139,6 +139,18 @@ namespace eatklik.Controllers
            
         }
 
+
+     [HttpGet("{id}/rating")]
+        public async Task<ActionResult<ICollection<RestaurantLocation>>> GetLocations(long id)
+        {
+            // var restaurant = await _db.Restaurants.FindAsync(id);
+            var rider = await _db.Riders.Include(x => x.RiderRatings).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (rider == null)
+                return NotFound();
+
+            return Ok(rider.RiderRatings);
+        }
         [HttpGet("city/{cityId}")]
         public async Task<ActionResult<ICollection<Rider>>> GetRiderByCity(long cityId)
         {
