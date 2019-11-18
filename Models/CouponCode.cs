@@ -9,7 +9,6 @@ namespace eatklik.Models {
         public string Code { get; set; }
         public long MaxAmount { get; set; }
         public long MinAmount { get; set; }
-        public long Discount { get; set; }
         public decimal PctDiscount { get; set; }
         public DateTime ValidTill { get; set; }
         public Status Status { get; set; }
