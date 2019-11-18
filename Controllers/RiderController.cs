@@ -19,13 +19,13 @@ namespace eatklik.Controllers
     {
         private readonly Context _db;
         private IHostingEnvironment _env;
-
         public RiderController(Context context, IHostingEnvironment env)
         {
             _db = context;
             this._env = env;
-        }
 
+        }
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Rider>>> GetAll()
         {
@@ -35,12 +35,23 @@ namespace eatklik.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Rider>> GetSingle(long id)
         {
-            var todoItem = await _db.Riders.FindAsync(id);
-
-            if (todoItem == null)
+            var rider = await _db.Riders.FindAsync(id);
+            if (rider == null)
                 return NotFound();
 
-            return todoItem;
+                
+            var ratings = await _db.RiderRatings.Where(x=> x.RiderId == rider.Id).ToListAsync();
+             float sum =0;
+             float i = ratings.Count();
+           foreach (var rating in ratings)
+            {  
+             sum = sum + rating.Value;
+            }
+            float average = sum / i;
+         
+            rider.Rating = average;
+
+            return rider;
         }
 
         [HttpPost]
@@ -141,7 +152,7 @@ namespace eatklik.Controllers
 
 
      [HttpGet("{id}/rating")]
-        public async Task<ActionResult<ICollection<RestaurantLocation>>> GetLocations(long id)
+        public async Task<ActionResult<ICollection<RiderRating>>> GetRatings(long id)
         {
             // var restaurant = await _db.Restaurants.FindAsync(id);
             var rider = await _db.Riders.Include(x => x.RiderRatings).FirstOrDefaultAsync(x => x.Id == id);
@@ -151,12 +162,25 @@ namespace eatklik.Controllers
 
             return Ok(rider.RiderRatings);
         }
+
         [HttpGet("city/{cityId}")]
         public async Task<ActionResult<ICollection<Rider>>> GetRiderByCity(long cityId)
         {
             var dbRiders = await _db.Riders.Where(x => x.CityId == cityId).ToListAsync();
             if (dbRiders == null)
                 return NotFound();
+            foreach (var rider in dbRiders)
+            {
+             var ratings = await _db.RiderRatings.Where(x=> x.RiderId == rider.Id).ToListAsync();
+              float sum =0;
+             float i = ratings.Count();
+           foreach (var rating in ratings)
+            {  
+             sum = sum + rating.Value;
+            }
+            float average = sum / i;         
+            rider.Rating = average;
+                }
 
             return dbRiders;
         }

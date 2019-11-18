@@ -46,16 +46,5 @@ namespace eatklik.Controllers
             return CreatedAtAction(nameof(GetSingle), new { id = riderRating.Id }, riderRating);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, RiderRating riderRating)
-        {
-            if (id != riderRating.Id)
-                return BadRequest();
-
-            _db.Entry(riderRating).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-
-            return NoContent();
-        }
     }
 }

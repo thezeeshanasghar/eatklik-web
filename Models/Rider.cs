@@ -15,7 +15,7 @@ namespace eatklik.Models
         public string ProfileImage { get; set; }
         public Status Status { get; set; }
 
-        public int Rating {get;set;}
+        public float Rating {get;set;}
 
         public long CityId { get; set; }
         public City City { get; set; }

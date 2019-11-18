@@ -8,7 +8,7 @@ namespace eatklik.Models
     public class RiderRating
     {
         public long Id { get; set; }
-        public long Value {get;set;}
+        public int Value {get;set;}
 
         public long CustomerId { get; set; }
         [JsonIgnore]
