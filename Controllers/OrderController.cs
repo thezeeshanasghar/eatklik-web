@@ -41,6 +41,17 @@ namespace eatklik.Controllers
 
         }
 
+        [HttpGet("rider/{id}")]
+        public async Task<ActionResult<ICollection<Order>>> GetOrdersByRider(int id)
+        {
+
+            var dbOrder = await _db.Orders.Where(x => x.Id == id).ToListAsync();
+            if (dbOrder == null)
+                return NotFound();
+            return dbOrder;
+
+        }
+
         [HttpPost("customer-order")]
         public async Task<ActionResult<City>> Post(Order postedOrder)
         {
