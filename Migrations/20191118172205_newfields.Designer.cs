@@ -9,8 +9,8 @@ using eatklik.Models;
 namespace eatklik.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20191105071815_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20191118172205_newfields")]
+    partial class newfields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,9 +41,13 @@ namespace eatklik.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<long>("CityId");
+
                     b.Property<string>("Code");
 
-                    b.Property<long>("Discount");
+                    b.Property<long>("MaxAmount");
+
+                    b.Property<long>("MinAmount");
 
                     b.Property<decimal>("PctDiscount");
 
@@ -52,6 +56,8 @@ namespace eatklik.Migrations
                     b.Property<DateTime>("ValidTill");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CityId");
 
                     b.ToTable("CouponCodes");
                 });
@@ -237,6 +243,8 @@ namespace eatklik.Migrations
 
                     b.Property<string>("CoverImagePath");
 
+                    b.Property<long>("DelCharges");
+
                     b.Property<string>("Description");
 
                     b.Property<string>("LogoImagePath");
@@ -246,6 +254,8 @@ namespace eatklik.Migrations
                     b.Property<long>("MinOrderPrice");
 
                     b.Property<string>("Name");
+
+                    b.Property<int>("Status");
 
                     b.HasKey("Id");
 
@@ -392,7 +402,7 @@ namespace eatklik.Migrations
 
                     b.Property<string>("ProfileImage");
 
-                    b.Property<int>("Rating");
+                    b.Property<float>("Rating");
 
                     b.Property<int>("Status");
 
@@ -401,6 +411,26 @@ namespace eatklik.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("Riders");
+                });
+
+            modelBuilder.Entity("eatklik.Models.RiderRating", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("CustomerId");
+
+                    b.Property<long>("RiderId");
+
+                    b.Property<int>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("RiderId");
+
+                    b.ToTable("RiderRatings");
                 });
 
             modelBuilder.Entity("eatklik.Models.Setting", b =>
@@ -437,6 +467,14 @@ namespace eatklik.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("eatklik.Models.CouponCode", b =>
+                {
+                    b.HasOne("eatklik.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("eatklik.Models.Customer", b =>
@@ -571,6 +609,19 @@ namespace eatklik.Migrations
                     b.HasOne("eatklik.Models.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("eatklik.Models.RiderRating", b =>
+                {
+                    b.HasOne("eatklik.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eatklik.Models.Rider", "Rider")
+                        .WithMany("RiderRatings")
+                        .HasForeignKey("RiderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

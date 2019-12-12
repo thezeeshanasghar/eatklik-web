@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace eatklik.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class first : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,23 +21,6 @@ namespace eatklik.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CouponCodes",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySQL:AutoIncrement", true),
-                    Code = table.Column<string>(nullable: true),
-                    Discount = table.Column<long>(nullable: false),
-                    PctDiscount = table.Column<decimal>(nullable: false),
-                    ValidTill = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CouponCodes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -85,6 +68,32 @@ namespace eatklik.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CouponCodes",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySQL:AutoIncrement", true),
+                    Code = table.Column<string>(nullable: true),
+                    MaxAmount = table.Column<long>(nullable: false),
+                    MinAmount = table.Column<long>(nullable: false),
+                    Discount = table.Column<long>(nullable: false),
+                    PctDiscount = table.Column<decimal>(nullable: false),
+                    ValidTill = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    CityId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CouponCodes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CouponCodes_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,7 +153,9 @@ namespace eatklik.Migrations
                     Name = table.Column<string>(nullable: true),
                     MinOrderPrice = table.Column<long>(nullable: false),
                     MaxOrderPrice = table.Column<long>(nullable: false),
+                    DelCharges = table.Column<long>(nullable: false),
                     Description = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
                     LogoImagePath = table.Column<string>(nullable: true),
                     CoverImagePath = table.Column<string>(nullable: true),
                     CityId = table.Column<long>(nullable: false)
@@ -445,6 +456,11 @@ namespace eatklik.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CouponCodes_CityId",
+                table: "CouponCodes",
+                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_CityId",

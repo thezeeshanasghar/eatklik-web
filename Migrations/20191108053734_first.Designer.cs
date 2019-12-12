@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eatklik.Models;
 
 namespace eatklik.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20191108053734_first")]
+    partial class first
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,6 +44,8 @@ namespace eatklik.Migrations
                     b.Property<long>("CityId");
 
                     b.Property<string>("Code");
+
+                    b.Property<long>("Discount");
 
                     b.Property<long>("MaxAmount");
 
@@ -324,8 +328,6 @@ namespace eatklik.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<long>("DelRadius");
-
                     b.Property<long>("Latitude");
 
                     b.Property<long>("Longitude");
@@ -402,7 +404,7 @@ namespace eatklik.Migrations
 
                     b.Property<string>("ProfileImage");
 
-                    b.Property<float>("Rating");
+                    b.Property<int>("Rating");
 
                     b.Property<int>("Status");
 
@@ -411,26 +413,6 @@ namespace eatklik.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("Riders");
-                });
-
-            modelBuilder.Entity("eatklik.Models.RiderRating", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long>("CustomerId");
-
-                    b.Property<long>("RiderId");
-
-                    b.Property<int>("Value");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("RiderId");
-
-                    b.ToTable("RiderRatings");
                 });
 
             modelBuilder.Entity("eatklik.Models.Setting", b =>
@@ -609,19 +591,6 @@ namespace eatklik.Migrations
                     b.HasOne("eatklik.Models.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("eatklik.Models.RiderRating", b =>
-                {
-                    b.HasOne("eatklik.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("eatklik.Models.Rider", "Rider")
-                        .WithMany("RiderRatings")
-                        .HasForeignKey("RiderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

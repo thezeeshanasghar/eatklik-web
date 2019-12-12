@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eatklik.Models;
 
 namespace eatklik.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20191108071540_AddRiderRatingModel")]
+    partial class AddRiderRatingModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,6 +44,8 @@ namespace eatklik.Migrations
                     b.Property<long>("CityId");
 
                     b.Property<string>("Code");
+
+                    b.Property<long>("Discount");
 
                     b.Property<long>("MaxAmount");
 
@@ -324,8 +328,6 @@ namespace eatklik.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<long>("DelRadius");
-
                     b.Property<long>("Latitude");
 
                     b.Property<long>("Longitude");
@@ -402,7 +404,7 @@ namespace eatklik.Migrations
 
                     b.Property<string>("ProfileImage");
 
-                    b.Property<float>("Rating");
+                    b.Property<int>("Rating");
 
                     b.Property<int>("Status");
 
@@ -422,7 +424,7 @@ namespace eatklik.Migrations
 
                     b.Property<long>("RiderId");
 
-                    b.Property<int>("Value");
+                    b.Property<long>("Value");
 
                     b.HasKey("Id");
 
@@ -620,7 +622,7 @@ namespace eatklik.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("eatklik.Models.Rider", "Rider")
-                        .WithMany("RiderRatings")
+                        .WithMany()
                         .HasForeignKey("RiderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
