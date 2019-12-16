@@ -14,6 +14,9 @@ namespace eatklik.Models
         public long DeliveryCharges { get; set; }
         public long GST { get; set; }
         public long GrandTotal { get; set; }
+        public string Address {get;set;}
+        public string PayMethod {get;set;}
+        public string Instruction {get;set;}
         public DateTime Created { get; set; }
         public OrderStatus OrderStatus { get; set; }
 
