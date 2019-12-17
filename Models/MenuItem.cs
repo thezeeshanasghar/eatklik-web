@@ -9,7 +9,8 @@ namespace eatklik.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public string ImagePath { get; set; }
-        public ItemSize Size { get; set; }
+        // public ItemSize Size { get; set; }
+        public string Size {get; set;}
         public long Price { get; set; }
         public Status Status { get; set; }
 
@@ -19,10 +20,10 @@ namespace eatklik.Models
         public Menu Menu { get; set; }
     }
 
-    public enum ItemSize
-    {
-        Nothing,
-        Half,
-        Full
-    }
+    // public enum ItemSize
+    // {
+    //     Nothing,
+    //     Half,
+    //     Full
+    // }
 }
