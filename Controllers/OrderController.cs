@@ -17,10 +17,9 @@ namespace eatklik.Controllers
         private readonly Context _db;
         private readonly IMapper _mapper;
 
-        public OrderController(Context context, IMapper mapper)
+        public OrderController(Context context)
         {
             _db = context;
-            this._mapper = mapper;
         }
 
 
@@ -53,16 +52,15 @@ namespace eatklik.Controllers
         }
 
         [HttpPost("customer-order")]
-        public async Task<ActionResult<City>> Post(Order postedOrder)
+        public async Task<ActionResult<Order>> Post(Order postedOrder)
         {
             Customer customer = _db.Customers.Where(x => x.Id == postedOrder.CustomerId).FirstOrDefault();
 
             postedOrder.Customer = customer;
             postedOrder.Created = DateTime.Now;
             postedOrder.OrderStatus = OrderStatus.New;
-            _db.Orders.Add(postedOrder);
+            _db.Orders.Update(postedOrder);
             await _db.SaveChangesAsync();
-
             return CreatedAtAction(nameof(GetSingle), new { id = postedOrder.Id }, postedOrder);
         }
 
