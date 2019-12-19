@@ -35,6 +35,17 @@ namespace eatklik.Controllers
             return Review;
         }
 
+        //Get By Restaurant
+         [HttpGet("restaurant/{id}")]
+          public async Task<ActionResult<IEnumerable<Review>>> GetByRestaurant(long id)
+        {
+            var Review = await _db.Reviews.Include(x=>x.Customer).Where(x=>x.RestaurantId == id).ToListAsync();
+            if (Review == null)
+                return NotFound();
+
+            return Review;
+        }
+
         [HttpPost]
         public async Task<ActionResult<Review>> Post(Review Review)
         {

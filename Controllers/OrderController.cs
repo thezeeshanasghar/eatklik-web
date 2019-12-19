@@ -106,6 +106,16 @@ namespace eatklik.Controllers
             return dbOrders;
 
         }
+         [HttpGet("{id}/status")]
+        public async Task<ActionResult<OrderStatus>> GetSingleStatus(int id)
+        {
+
+            var dbOrder = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            if (dbOrder == null)
+                return NotFound();
+            return dbOrder.OrderStatus;
+
+        }
         
         [HttpGet("status/{orderStatus}")]
         public async Task<ActionResult<ICollection<Order>>> GetOrderByStatus(int orderStatus)

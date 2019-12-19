@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace eatklik.Models
 {
@@ -12,8 +13,8 @@ namespace eatklik.Models
         public Status Status { get; set; }
 
 
-        public long CustomerId {get;set;}
-        public Customer Customer{get;set;}
+        public long CustomerId {get;set;}       
+        public virtual Customer Customer{get;set;}
         public long RestaurantId {get;set;}
         public Restaurant Restaurant {get;set;}
     }

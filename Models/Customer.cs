@@ -17,7 +17,7 @@ namespace eatklik.Models
         public long CityId {get;set;}
         public City City {get;set;}
 
-        public virtual ICollection<Review> RestaurantReviews {get;set;}
+      //  public virtual ICollection<Review> RestaurantReviews {get;set;}
         public virtual ICollection<Order> CustomerOrders {get;set;}
     }
 
