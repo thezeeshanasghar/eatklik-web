@@ -18,6 +18,7 @@ namespace eatklik.Models
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<MenuItem> MenuItems { get; set; }
+        public DbSet<MenuExtraItem> MenuExtraItems { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<RestaurantContact> RestaurantContacts { get; set; }
         public DbSet<RestaurantLocation> RestaurantLocations { get; set; }

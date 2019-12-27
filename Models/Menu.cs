@@ -12,6 +12,7 @@ namespace eatklik.Models
         public Status Status { get; set; }
 
         public ICollection<MenuItem> MenuItems { get; set; }
+         public ICollection<MenuExtraItem> MenuExtraItems { get; set; }
         public long RestaurantId { get; set; }
         [JsonIgnore]
         public Restaurant Restaurant { get; set; }
