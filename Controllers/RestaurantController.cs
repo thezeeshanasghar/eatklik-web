@@ -26,6 +26,16 @@ namespace eatklik.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Restaurant>>> GetAll()
         {
+            //var restaurant = await _db.Restaurants.Where(x => x.Status == Status.Enable).ToListAsync();
+          var restaurant = await _db.Restaurants.ToListAsync();
+            foreach (var rest in restaurant)
+            {
+                 var avg = _db.Reviews.Where(c => c.RestaurantId == rest.Id).Average(c => c.Rating); 
+                 rest.Rating = avg;
+                 var count = _db.Reviews.Where(c => c.RestaurantId == rest.Id).Count(); 
+                 rest.reviewCount = count;
+            }
+
             return await _db.Restaurants.ToListAsync();
         }
 
@@ -33,60 +43,16 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Restaurant>> GetSingle(long id)
         {
             var Restaurant = await _db.Restaurants.FindAsync(id);
+           var avg = _db.Reviews.Where(c => c.RestaurantId ==id).Average(c => c.Rating);
+             Restaurant.Rating = avg;
+           
             if (Restaurant == null)
                 return NotFound();
 
             return Restaurant;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Restaurant>> Post(Restaurant Restaurant)
-        {
-            _db.Restaurants.Update(Restaurant);
-            await _db.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetSingle), new { id = Restaurant.Id }, Restaurant);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, Restaurant Restaurant)
-        {
-            if (id != Restaurant.Id)
-                return BadRequest();
-
-            _db.Entry(Restaurant).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-
-            return NoContent();
-        }
-        [HttpPut("{id}/status/{status}")]
-        public async Task<IActionResult> UpdateRestaurantStatus(long id, int status)
-        {
-            var dbRestaurant = await _db.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
-            if (dbRestaurant == null)
-                return NotFound();
-            dbRestaurant.Status = (Status) status;
-            _db.Entry(dbRestaurant).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
-        {
-            var Restaurant = await _db.Restaurants.FindAsync(id);
-
-            if (Restaurant == null)
-                return NotFound();
-
-            _db.Restaurants.Remove(Restaurant);
-            await _db.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        [HttpGet("{id}/location")]
+          [HttpGet("{id}/location")]
         public async Task<ActionResult<ICollection<RestaurantLocation>>> GetLocations(long id)
         {
             // var restaurant = await _db.Restaurants.FindAsync(id);
@@ -186,5 +152,63 @@ namespace eatklik.Controllers
             return dbRestaurants;
 
         }
+
+         [HttpGet("{keyword}/search")]
+        public async Task<ActionResult<ICollection<Restaurant>>> SearchRestaurant(string keyword)
+        {
+
+                    var dbRestaurants = await _db.Restaurants.Where(c => c.Name.ToLower().Contains(keyword.ToLower())).ToListAsync();
+
+                    return dbRestaurants;    
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Restaurant>> Post(Restaurant Restaurant)
+        {
+            _db.Restaurants.Update(Restaurant);
+            await _db.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetSingle), new { id = Restaurant.Id }, Restaurant);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(long id, Restaurant Restaurant)
+        {
+            if (id != Restaurant.Id)
+                return BadRequest();
+
+            _db.Entry(Restaurant).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+        [HttpPut("{id}/status/{status}")]
+        public async Task<IActionResult> UpdateRestaurantStatus(long id, int status)
+        {
+            var dbRestaurant = await _db.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            if (dbRestaurant == null)
+                return NotFound();
+            dbRestaurant.Status = (Status) status;
+            _db.Entry(dbRestaurant).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var Restaurant = await _db.Restaurants.FindAsync(id);
+
+            if (Restaurant == null)
+                return NotFound();
+
+            _db.Restaurants.Remove(Restaurant);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+      
     }
 }

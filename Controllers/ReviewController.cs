@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace eatklik.Controllers
 {
@@ -49,6 +50,7 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Review>> Post(Review Review)
         {
+            Review.Created = DateTime.Now;
             _db.Reviews.Update(Review);
             await _db.SaveChangesAsync();
 
