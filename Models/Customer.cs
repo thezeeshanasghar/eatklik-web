@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace eatklik.Models
 {
@@ -15,6 +16,7 @@ namespace eatklik.Models
         public string Address {get;set;}
         public Status Status {get;set;}
         public long? CityId {get;set;}
+        [JsonIgnore]
         public City City {get;set;}
 
       //  public virtual ICollection<Review> RestaurantReviews {get;set;}
