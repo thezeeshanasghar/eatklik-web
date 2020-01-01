@@ -47,8 +47,12 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Restaurant>> GetSingle(long id)
         {
             var Restaurant = await _db.Restaurants.FindAsync(id);
-           var avg = _db.Reviews.Where(c => c.RestaurantId ==id).Average(c => c.Rating);
+           var avgr = await _db.Reviews.Where(c => c.RestaurantId ==id).ToListAsync();
+           if(avgr.Count !=0 )
+           {
+           var avg = avgr.Average(c => c.Rating);
              Restaurant.Rating = avg;
+           }
            
             if (Restaurant == null)
                 return NotFound();
