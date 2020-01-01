@@ -18,7 +18,8 @@ namespace eatklik.Models
         public long CustomerId {get;set;}       
         public virtual Customer Customer{get;set;}
         public long RestaurantId {get;set;}
-        public Restaurant Restaurant {get;set;}
+        [JsonIgnore]
+        public virtual Restaurant Restaurant {get;set;}
     }
 
 }
