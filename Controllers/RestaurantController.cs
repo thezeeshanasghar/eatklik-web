@@ -30,10 +30,14 @@ namespace eatklik.Controllers
           var restaurant = await _db.Restaurants.ToListAsync();
             foreach (var rest in restaurant)
             {
-                 var avg = _db.Reviews.Where(c => c.RestaurantId == rest.Id).Average(c => c.Rating); 
+                var avgr = await _db.Reviews.Where(c => c.RestaurantId == rest.Id).ToListAsync();
+                if(avgr.Count !=0)
+                {
+                 var avg = avgr.Average(c => c.Rating); 
                  rest.Rating = avg;
-                 var count = _db.Reviews.Where(c => c.RestaurantId == rest.Id).Count(); 
+                 var count = avgr.Count(); 
                  rest.reviewCount = count;
+                }
             }
 
             return await _db.Restaurants.ToListAsync();
