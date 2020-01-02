@@ -35,6 +35,16 @@ namespace eatklik.Controllers
             return todoItem;
         }
 
+         [HttpGet("{code}")]
+        public async Task<ActionResult<CouponCode>> GetCoupon(string code)
+        {
+            var todoItem = await _db.CouponCodes.Where(x=> x.Code == code).FirstOrDefaultAsync();
+            if (todoItem == null)
+                return NotFound();
+
+            return todoItem;
+        }
+
         [HttpPost]
         public async Task<ActionResult<CouponCode>> Post(CouponCode couponCode)
         {
