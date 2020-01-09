@@ -53,6 +53,16 @@ namespace eatklik.Controllers
             Review.Created = DateTime.Now;
             _db.Reviews.Update(Review);
             await _db.SaveChangesAsync();
+             var Restaurant = await _db.Restaurants.Where(x=>x.Id == Review.RestaurantId).FirstOrDefaultAsync();
+             var avgr = await _db.Reviews.Where(c => c.RestaurantId == Restaurant.Id).ToListAsync();
+                if(avgr.Count !=0)
+                {
+                 var avg = avgr.Average(c => c.Rating); 
+                 Restaurant.Rating = avg;
+                 var count = avgr.Count(); 
+                 Restaurant.reviewCount = count;
+                }
+            await _db.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetSingle), new { id = Review.Id }, Review);
         }

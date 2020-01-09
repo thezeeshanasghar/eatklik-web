@@ -24,30 +24,62 @@ namespace eatklik.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Restaurant>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Restaurant>>> GetAll([FromQuery] string open = "", [FromQuery] string top = "", [FromQuery] String cuisineId ="")
         {
-            //var restaurant = await _db.Restaurants.Where(x => x.Status == Status.Enable).ToListAsync();
-          var restaurant = await _db.Restaurants.ToListAsync();
-            foreach (var rest in restaurant)
+        List<Restaurant> restaurantsC = new List<Restaurant>();
+            if (!String.IsNullOrEmpty(open))
             {
-                var avgr = await _db.Reviews.Where(c => c.RestaurantId == rest.Id).ToListAsync();
-                if(avgr.Count !=0)
+                var restaurantOpen = await _db.Restaurants.Where(x => x.Status == Status.Enable).ToListAsync();
+                 if (!String.IsNullOrEmpty(top))
                 {
-                 var avg = avgr.Average(c => c.Rating); 
-                 rest.Rating = avg;
-                 var count = avgr.Count(); 
-                 rest.reviewCount = count;
+                var restaurantTop = restaurantOpen.OrderByDescending(x=> x.Rating).ToList();
+                return restaurantTop;
                 }
-            }
 
-            return await _db.Restaurants.ToListAsync();
+                return restaurantOpen;
+            }
+            else if (!String.IsNullOrEmpty(top))
+            {
+                var restaurant = await _db.Restaurants.OrderByDescending(x=> x.Rating).ToListAsync();
+                return restaurant;
+            }
+            else if ((!String.IsNullOrEmpty(cuisineId)))
+            {
+                var cusineId = Int32.Parse(cuisineId);
+                 var restaurant = await _db.Restaurants.Include(x=>x.RestaurantCuisines).ToListAsync();
+                 foreach (var rest in restaurant)
+                 { 
+                     var Crestaurant = rest.RestaurantCuisines.Where(x=>x.CuisineId == cusineId).FirstOrDefault();
+                     if (Crestaurant != null)
+                     restaurantsC.Add(rest);
+                 }
+                 return restaurantsC; 
+            }
+            else {
+           var restaurant = await _db.Restaurants.OrderBy(x=>x.Id).ToListAsync();
+            // foreach (var rest in restaurant)
+            // {
+            //     var avgr = await _db.Reviews.Where(c => c.RestaurantId == rest.Id).ToListAsync();
+            //     if(avgr.Count !=0)
+            //     {
+            //      var avg = avgr.Average(c => c.Rating); 
+            //      rest.Rating = avg;
+            //      var count = avgr.Count(); 
+            //      rest.reviewCount = count;
+            //     }
+            // }
+            return restaurant;
+            
+            }
         }
+
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Restaurant>> GetSingle(long id)
         {
             var Restaurant = await _db.Restaurants.FindAsync(id);
-           var avgr = await _db.Reviews.Where(c => c.RestaurantId ==id).ToListAsync();
+           var avgr = await _db.Reviews.Where(c => c.RestaurantId ==id).OrderBy(x=>x.Id).ToListAsync();
            if(avgr.Count !=0 )
            {
            var avg = avgr.Average(c => c.Rating);
