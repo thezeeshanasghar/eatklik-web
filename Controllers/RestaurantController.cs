@@ -53,7 +53,7 @@ namespace eatklik.Controllers
                      if (Crestaurant != null)
                      restaurantsC.Add(rest);
                  }
-                 return restaurantsC; 
+                 return restaurantsC;
             }
             else {
            var restaurant = await _db.Restaurants.OrderBy(x=>x.Id).ToListAsync();
@@ -71,6 +71,45 @@ namespace eatklik.Controllers
             return restaurant;
             
             }
+        }
+           
+        [HttpGet("city/{cityId}")]
+        public async Task<ActionResult<ICollection<Restaurant>>> GetRestaurantByCity(int cityId,[FromQuery] string open = "", [FromQuery] string top = "", [FromQuery] String cuisineId ="")
+        {
+            List<Restaurant> restaurantsC = new List<Restaurant>();
+            if (!String.IsNullOrEmpty(open))
+            {
+                var restaurantOpen = await _db.Restaurants.Where(x =>x.CityId == cityId && x.Status == Status.Enable).ToListAsync();
+                 if (!String.IsNullOrEmpty(top))
+                {
+                var restaurantTop = restaurantOpen.OrderByDescending(x=> x.Rating).ToList();
+                return restaurantTop;
+                }
+
+                return restaurantOpen;
+            }
+            else if (!String.IsNullOrEmpty(top))
+            {
+                var restaurant = await _db.Restaurants.Where(x=>x.CityId == cityId).OrderByDescending(x=> x.Rating).ToListAsync();
+                return restaurant;
+            }
+            else if ((!String.IsNullOrEmpty(cuisineId)))
+            {
+                var cusineId = Int32.Parse(cuisineId);
+                 var restaurant = await _db.Restaurants.Include(x=>x.RestaurantCuisines).Where(x=>x.CityId == cityId).ToListAsync();
+                 foreach (var rest in restaurant)
+                 { 
+                     var Crestaurant = rest.RestaurantCuisines.Where(x=>x.CuisineId == cusineId).FirstOrDefault();
+                     if (Crestaurant != null)
+                     restaurantsC.Add(rest);
+                 }
+                 return restaurantsC;
+            }
+            else {
+           var restaurant = await _db.Restaurants.Where(x=> x.CityId == cityId).OrderBy(x=>x.Id).ToListAsync();
+            return restaurant;
+            }
+
         }
 
 
@@ -183,21 +222,22 @@ namespace eatklik.Controllers
             
         }
 
-          [HttpGet("city/{cityId}")]
-        public async Task<ActionResult<ICollection<Restaurant>>> GetRestaurantByCity(int cityId)
-        {
-            var dbRestaurants = await _db.Restaurants.Where(x => x.CityId == cityId).ToListAsync();
-            if (dbRestaurants == null)
-                return NotFound();
-            return dbRestaurants;
-
-        }
+       
 
          [HttpGet("{keyword}/search")]
         public async Task<ActionResult<ICollection<Restaurant>>> SearchRestaurant(string keyword)
         {
 
                     var dbRestaurants = await _db.Restaurants.Where(c => c.Name.ToLower().Contains(keyword.ToLower())).ToListAsync();
+
+                    return dbRestaurants;    
+        }
+
+        [HttpGet("sponsor")]
+        public async Task<ActionResult<ICollection<Restaurant>>> GetSponsorRestaurant()
+        {
+
+                    var dbRestaurants = await _db.Restaurants.Where(c => c.IsSponsor == true).ToListAsync();
 
                     return dbRestaurants;    
         }
@@ -229,6 +269,19 @@ namespace eatklik.Controllers
             if (dbRestaurant == null)
                 return NotFound();
             dbRestaurant.Status = (Status) status;
+            _db.Entry(dbRestaurant).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+          [HttpPut("{id}/sponsor/{status}")]
+        public async Task<IActionResult> UpdateRestaurantSponsor(long id, bool status)
+        {
+            var dbRestaurant = await _db.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
+            if (dbRestaurant == null)
+                return NotFound();
+            dbRestaurant.IsSponsor = status;
             _db.Entry(dbRestaurant).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 

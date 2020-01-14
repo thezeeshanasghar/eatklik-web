@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace eatklik.Models
 {
@@ -36,6 +38,10 @@ namespace eatklik.Models
                 .HasKey(bc => new { bc.RestaurantId, bc.CuisineId });
             modelBuilder.Entity<OrderItem>()
            .HasKey(bc => new { bc.Id });
+            
+            modelBuilder.Entity<Restaurant>()
+                            .Property(r => r.IsSponsor)
+                            .HasConversion(new BoolToZeroOneConverter<Int16>());
         }
     }
 }

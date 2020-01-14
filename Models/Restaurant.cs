@@ -14,6 +14,7 @@ namespace eatklik.Models
         public long DelCharges { get; set; }
         public string Description { get; set; }
         public Status Status { get; set; }
+        public bool? IsSponsor { get; set; }
         public string LogoImagePath { get; set; }
         public string CoverImagePath { get; set; }
         public long CityId { get; set; }
