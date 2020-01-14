@@ -35,7 +35,7 @@ namespace eatklik.Controllers
             return todoItem;
         }
 
-         [HttpGet("{cityName}")]
+         [HttpGet("name/{cityName}")]
         public async Task<ActionResult<City>> GetCityId(string cityName)
         {
             var todoItem = await _db.Cities.Where(c=>c.Name == cityName).FirstOrDefaultAsync();
