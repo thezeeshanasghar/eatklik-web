@@ -28,6 +28,7 @@ namespace eatklik.Models
         public DbSet<Review> Reviews { get; set; }
         public DbSet<CouponCode> CouponCodes { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Vote> Votes { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<RestaurantExtraItem> RestaurantExtraItems { get; set; }
