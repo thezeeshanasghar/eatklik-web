@@ -51,6 +51,28 @@ namespace eatklik.Controllers
 
         }
 
+        [HttpGet("rider/{id}/new")]
+        public async Task<ActionResult<ICollection<Order>>> GetNewOrdersByRider(int id)
+        {
+
+            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Active && x.RiderStatus == RiderStatus.New).ToListAsync();
+            if (dbOrder == null)
+                return NotFound();
+            return dbOrder;
+
+        }
+
+        [HttpGet("rider/{id}/pending")]
+        public async Task<ActionResult<ICollection<Order>>> GetPendingOrdersByRider(int id)
+        {
+
+            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Active && x.RiderStatus == RiderStatus.Accepted).ToListAsync();
+            if (dbOrder == null)
+                return NotFound();
+            return dbOrder;
+
+        }
+
         [HttpPost("customer-order")]
         public async Task<ActionResult<Order>> Post(Order postedOrder)
         {
@@ -59,6 +81,7 @@ namespace eatklik.Controllers
             postedOrder.Customer = customer;
             postedOrder.Created = DateTime.Now;
             postedOrder.OrderStatus = OrderStatus.New;
+            postedOrder.RiderStatus = RiderStatus.New;
             _db.Orders.Update(postedOrder);
             await _db.SaveChangesAsync();
             return CreatedAtAction(nameof(GetSingle), new { id = postedOrder.Id }, postedOrder);
@@ -71,6 +94,19 @@ namespace eatklik.Controllers
             if (dbOrder == null)
                 return NotFound();
             dbOrder.OrderStatus = (OrderStatus) status;
+            _db.Entry(dbOrder).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+         [HttpPut("{id}/rider-status/{status}")]
+        public async Task<IActionResult> UpdateRiderStatus(long id, int status)
+        {
+            var dbOrder = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            if (dbOrder == null)
+                return NotFound();
+            dbOrder.RiderStatus = (RiderStatus) status;
             _db.Entry(dbOrder).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 

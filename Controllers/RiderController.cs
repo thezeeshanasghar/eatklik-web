@@ -25,7 +25,7 @@ namespace eatklik.Controllers
             this._env = env;
 
         }
-        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Rider>>> GetAll()
         {
@@ -39,17 +39,24 @@ namespace eatklik.Controllers
             if (rider == null)
                 return NotFound();
 
-                
-            var ratings = await _db.RiderRatings.Where(x=> x.RiderId == rider.Id).ToListAsync();
-             float sum =0;
-             float i = ratings.Count();
-           foreach (var rating in ratings)
-            {  
-             sum = sum + rating.Value;
+
+            var ratings = await _db.RiderRatings.Where(x => x.RiderId == rider.Id).ToListAsync();
+            if (ratings == null)
+            {
+                rider.Rating = 0;
             }
-            float average = sum / i;
-         
-            rider.Rating = average;
+            else
+            {
+                float sum = 0;
+                float i = ratings.Count();
+                foreach (var rating in ratings)
+                {
+                    sum = sum + rating.Value;
+                }
+                float average = sum / i;
+
+                rider.Rating = average;
+            }
 
             return rider;
         }
@@ -57,10 +64,29 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Rider>> Post(Rider rider)
         {
+            rider.Rating = 0;
             _db.Riders.Update(rider);
             await _db.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetSingle), new { id = rider.Id }, rider);
+        }
+
+
+        [HttpPost("login")]
+        public ActionResult<Rider> Login(Rider postedRider)
+        {
+            var dbRider = _db.Riders.FirstOrDefault(x => x.MobileNo == postedRider.MobileNo
+            && x.Password == postedRider.Password);
+            if (dbRider == null)
+                return NotFound();
+
+            if (dbRider.ProfileImage == null)
+            {
+                // var imgPath = Directory.GetFiles("~/Content/RiderImages/avatar.png");
+                dbRider.ProfileImage = "avatar.png";
+            }
+            return dbRider;
+
         }
 
         [HttpPut("{id}")]
@@ -98,60 +124,45 @@ namespace eatklik.Controllers
             return rider.City;
         }
 
-        [HttpPost("login")]
-        public ActionResult<Rider> Login(Rider postedRider)
-        {
-                var dbRider = _db.Riders.FirstOrDefault(x => x.MobileNo == postedRider.MobileNo
-                && x.Password == postedRider.Password);
-                if (dbRider == null)
-                    return NotFound();
 
-                if (dbRider.ProfileImage == null)
-                {
-                    // var imgPath = Directory.GetFiles("~/Content/RiderImages/avatar.png");
-                    dbRider.ProfileImage = "avatar.png";
-                }
-                return dbRider;
-           
-        }
 
         [HttpPut("edit-profile/{id}")]
         public async Task<ActionResult<Rider>> UpdateProfileAsync(int id)
         {
-                var dbRider = _db.Riders.FirstOrDefault(x => x.Id == id);
-                if (dbRider == null)
-                    return NotFound();
+            var dbRider = _db.Riders.FirstOrDefault(x => x.Id == id);
+            if (dbRider == null)
+                return NotFound();
 
-                var httpRequest = HttpContext.Request.Form["rider"];
-                Rider postedRider = JsonConvert.DeserializeObject<Rider>(httpRequest);
+            var httpRequest = HttpContext.Request.Form["rider"];
+            Rider postedRider = JsonConvert.DeserializeObject<Rider>(httpRequest);
 
-                string imageName = null;
-                if (HttpContext.Request.Form.Files.Count > 0)
+            string imageName = null;
+            if (HttpContext.Request.Form.Files.Count > 0)
+            {
+                var postedFile = HttpContext.Request.Form.Files[0];
+                imageName = new string(Path.GetFileNameWithoutExtension(postedFile.FileName).Take(10).ToArray()).Replace(" ", "-");
+                imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(postedFile.FileName);
+                var filePath = Path.Combine(_env.ContentRootPath, "Content\\RiderImages");
+
+                using (var fileStream = new FileStream(Path.Combine(filePath, imageName), FileMode.Create))
                 {
-                    var postedFile = HttpContext.Request.Form.Files[0];
-                    imageName = new string(Path.GetFileNameWithoutExtension(postedFile.FileName).Take(10).ToArray()).Replace(" ", "-");
-                    imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(postedFile.FileName);
-                    var filePath = Path.Combine(_env.ContentRootPath, "Content\\RiderImages");
-
-                    using (var fileStream = new FileStream(Path.Combine(filePath, imageName), FileMode.Create))
-                    {
-                        await postedFile.CopyToAsync(fileStream);
-                        dbRider.ProfileImage = imageName;
-                    }
+                    await postedFile.CopyToAsync(fileStream);
+                    dbRider.ProfileImage = imageName;
                 }
-                dbRider.Name = postedRider.Name;
-                dbRider.MobileNo = postedRider.MobileNo;
-                dbRider.Password = postedRider.Password;
-                dbRider.CNIC = postedRider.CNIC;
-                dbRider.Address = postedRider.Address;
-                _db.Entry(dbRider).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
-                return dbRider;
-           
+            }
+            dbRider.Name = postedRider.Name;
+            dbRider.MobileNo = postedRider.MobileNo;
+            dbRider.Password = postedRider.Password;
+            dbRider.CNIC = postedRider.CNIC;
+            dbRider.Address = postedRider.Address;
+            _db.Entry(dbRider).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return dbRider;
+
         }
 
 
-     [HttpGet("{id}/rating")]
+        [HttpGet("{id}/rating")]
         public async Task<ActionResult<ICollection<RiderRating>>> GetRatings(long id)
         {
             // var restaurant = await _db.Restaurants.FindAsync(id);
@@ -171,16 +182,16 @@ namespace eatklik.Controllers
                 return NotFound();
             foreach (var rider in dbRiders)
             {
-             var ratings = await _db.RiderRatings.Where(x=> x.RiderId == rider.Id).ToListAsync();
-              float sum =0;
-             float i = ratings.Count();
-           foreach (var rating in ratings)
-            {  
-             sum = sum + rating.Value;
-            }
-            float average = sum / i;         
-            rider.Rating = average;
+                var ratings = await _db.RiderRatings.Where(x => x.RiderId == rider.Id).ToListAsync();
+                float sum = 0;
+                float i = ratings.Count();
+                foreach (var rating in ratings)
+                {
+                    sum = sum + rating.Value;
                 }
+                float average = sum / i;
+                rider.Rating = average;
+            }
 
             return dbRiders;
         }

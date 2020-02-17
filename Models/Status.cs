@@ -19,4 +19,10 @@ namespace eatklik.Models
         Complete,
         Cancel
     }
+     public enum RiderStatus
+    {
+        New,
+        Accepted,
+        Rejected
+    }
 }
