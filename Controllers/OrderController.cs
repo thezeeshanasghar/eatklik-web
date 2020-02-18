@@ -51,11 +51,33 @@ namespace eatklik.Controllers
 
         }
 
-        [HttpGet("rider/{id}/new")]
+        // [HttpGet("rider/{id}/new")]
+        // public async Task<ActionResult<ICollection<Order>>> GetNewOrdersByRider(int id)
+        // {
+
+        //     var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Active && x.RiderStatus == RiderStatus.New).ToListAsync();
+        //     if (dbOrder == null)
+        //         return NotFound();
+        //     return dbOrder;
+
+        // }
+
+        // [HttpGet("rider/{id}/pending")]
+        // public async Task<ActionResult<ICollection<Order>>> GetPendingOrdersByRider(int id)
+        // {
+
+        //     var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Active && x.RiderStatus == RiderStatus.Accepted).ToListAsync();
+        //     if (dbOrder == null)
+        //         return NotFound();
+        //     return dbOrder;
+
+        // }
+
+         [HttpGet("rider/{id}/new")]
         public async Task<ActionResult<ICollection<Order>>> GetNewOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Active && x.RiderStatus == RiderStatus.New).ToListAsync();
+            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Assigned).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -66,7 +88,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetPendingOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Active && x.RiderStatus == RiderStatus.Accepted).ToListAsync();
+            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.RiderAccepted).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -81,7 +103,7 @@ namespace eatklik.Controllers
             postedOrder.Customer = customer;
             postedOrder.Created = DateTime.Now;
             postedOrder.OrderStatus = OrderStatus.New;
-            postedOrder.RiderStatus = RiderStatus.New;
+         //   postedOrder.RiderStatus = RiderStatus.New;
             _db.Orders.Update(postedOrder);
             await _db.SaveChangesAsync();
             return CreatedAtAction(nameof(GetSingle), new { id = postedOrder.Id }, postedOrder);
@@ -100,18 +122,18 @@ namespace eatklik.Controllers
             return NoContent();
         }
 
-         [HttpPut("{id}/rider-status/{status}")]
-        public async Task<IActionResult> UpdateRiderStatus(long id, int status)
-        {
-            var dbOrder = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
-            if (dbOrder == null)
-                return NotFound();
-            dbOrder.RiderStatus = (RiderStatus) status;
-            _db.Entry(dbOrder).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
+        //  [HttpPut("{id}/rider-status/{status}")]
+        // public async Task<IActionResult> UpdateRiderStatus(long id, int status)
+        // {
+        //     var dbOrder = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
+        //     if (dbOrder == null)
+        //         return NotFound();
+        //     dbOrder.RiderStatus = (RiderStatus) status;
+        //     _db.Entry(dbOrder).State = EntityState.Modified;
+        //     await _db.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //     return NoContent();
+        // }
 
         [HttpPut("{id}/order-rider/{rid}")]
         public async Task<IActionResult> UpdateOrderRider(long id, int rid)
@@ -134,7 +156,7 @@ namespace eatklik.Controllers
         }
 
         [HttpGet("city/{cityId}")]
-        public async Task<ActionResult<ICollection<Order>>> GetOrderByCity(int cityId)
+        public async Task<ActionResult<ICollection<Order>>> GetOrderByCity(long cityId)
         {
             var dbOrders = await _db.Orders.Where(x => x.CityId == cityId).ToListAsync();
             if (dbOrders == null)

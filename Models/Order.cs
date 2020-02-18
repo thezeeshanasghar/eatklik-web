@@ -19,7 +19,7 @@ namespace eatklik.Models
         public string Instruction {get;set;}
         public DateTime Created { get; set; }
         public OrderStatus OrderStatus { get; set; }
-        public RiderStatus RiderStatus { get; set; }
+      //  public RiderStatus RiderStatus { get; set; }
         public long CustomerId { get; set; }
         [JsonIgnore]
         public Customer Customer { get; set; }

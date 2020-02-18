@@ -17,7 +17,11 @@ namespace eatklik.Models
         Active,
         Dispatch,
         Complete,
-        Cancel
+        Cancel,
+        Assigned,
+        RiderAccepted,
+        RiderRejected,
+
     }
      public enum RiderStatus
     {
