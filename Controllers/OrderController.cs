@@ -51,6 +51,17 @@ namespace eatklik.Controllers
 
         }
 
+          [HttpGet("rider-complete/{id}")]
+        public async Task<ActionResult<ICollection<Order>>> GetCompleteOrdersByRider(int id)
+        {
+
+            var dbOrder = await _db.Orders.Where(x => x.Id == id && x.OrderStatus == OrderStatus.Complete).ToListAsync();
+            if (dbOrder == null)
+                return NotFound();
+            return dbOrder;
+
+        }
+
         // [HttpGet("rider/{id}/new")]
         // public async Task<ActionResult<ICollection<Order>>> GetNewOrdersByRider(int id)
         // {
@@ -192,5 +203,7 @@ namespace eatklik.Controllers
                 return NotFound();
             return dbOrders;
         }
+
+
     }
 }
