@@ -131,6 +131,58 @@ namespace eatklik.Controllers
             return Restaurant;
         }
 
+         [HttpGet("{lat}/{lng}")]
+        public async Task<ActionResult<ICollection<Restaurant>>> GetInField(float lat , float lng , [FromQuery] string open = "", [FromQuery] string top = "", [FromQuery] String cuisineId ="")
+        {
+             List<Restaurant> restaurant = new List<Restaurant>();
+             List<Restaurant> restaurantC = new List<Restaurant>();
+             var RestaurantLocation = await _db.RestaurantLocations.ToListAsync();
+            foreach (var loc in RestaurantLocation)
+            {
+                var distance = CalculateDistance(lat , lng , loc.Latitude , loc.Longitude);
+                if (distance <= 5)
+                {
+                var rest = await _db.Restaurants.Include(x=>x.RestaurantCuisines).Where(x=> x.Id == loc.RestaurantId).FirstOrDefaultAsync();
+               restaurant.Add(rest);
+                }
+
+            }
+         if (!String.IsNullOrEmpty(open))
+            {
+                var restaurantOpen =  restaurant.Where(x=>x.Status == Status.Enable).ToList();
+                 if (!String.IsNullOrEmpty(top))
+                {
+                var restaurantTop = restaurantOpen.OrderByDescending(x=> x.Rating).ToList();
+                return restaurantTop;
+                }
+
+                return restaurantOpen;
+            }
+             
+             else if (!String.IsNullOrEmpty(top))
+            {
+                var restaurantT =  restaurant.OrderByDescending(x=> x.Rating).ToList();
+                return restaurantT;
+            }
+             else if ((!String.IsNullOrEmpty(cuisineId)))
+            {
+                var cusineId = Int32.Parse(cuisineId);
+               //  var restaurantC = restaurant.Include(x=>x.RestaurantCuisines).Where(x=>x.CityId == cityId).ToListAsync();
+                 foreach (var rest in restaurant)
+                 { 
+                     var Crestaurant = rest.RestaurantCuisines.Where(x=>x.CuisineId == cusineId).FirstOrDefault();
+                     if (Crestaurant != null)
+                     restaurantC.Add(rest);
+                 }
+                 return restaurantC;
+            }
+            else  
+            return restaurant;
+        }
+         
+
+
+
           [HttpGet("{id}/location")]
         public async Task<ActionResult<ICollection<RestaurantLocation>>> GetLocations(long id)
         {
@@ -301,6 +353,29 @@ namespace eatklik.Controllers
 
             return NoContent();
         }
+
+     public static double CalculateDistance(double sLatitude,double sLongitude, double eLatitude, 
+                               double eLongitude)
+{
+    var radiansOverDegrees = (Math.PI / 180.0);
+    var sLatitudeRadians = sLatitude * radiansOverDegrees;
+    var sLongitudeRadians = sLongitude * radiansOverDegrees;
+    var eLatitudeRadians = eLatitude * radiansOverDegrees;
+    var eLongitudeRadians = eLongitude * radiansOverDegrees;
+
+    var dLongitude = eLongitudeRadians - sLongitudeRadians;
+    var dLatitude = eLatitudeRadians - sLatitudeRadians;
+
+    var result1 = Math.Pow(Math.Sin(dLatitude / 2.0), 2.0) + 
+                  Math.Cos(sLatitudeRadians) * Math.Cos(eLatitudeRadians) * 
+                  Math.Pow(Math.Sin(dLongitude / 2.0), 2.0);
+
+    // Using 3956 as the number of miles around the earth
+    var result2 = 3956.0 * 2.0 * 
+                  Math.Atan2(Math.Sqrt(result1), Math.Sqrt(1.0 - result1));
+
+    return result2;
+}
 
       
     }

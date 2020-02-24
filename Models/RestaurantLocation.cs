@@ -9,9 +9,9 @@ namespace eatklik.Models
     {
         public long Id { get; set; }
         public string Address { get; set; }
-        public long Latitude { get; set; }
-        public long Longitude { get; set; }
-        public long DelRadius { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double DelRadius { get; set; }
 
 
         public long RestaurantId { get; set; }
