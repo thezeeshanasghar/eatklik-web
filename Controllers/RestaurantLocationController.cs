@@ -28,6 +28,16 @@ namespace eatklik.Controllers
 
             return RestaurantLocation;
         }
+           [HttpGet("Restaurant/{id}")]
+        public async Task<ActionResult<RestaurantLocation>> GetbyRestaurant(long id)
+        {
+            var RestaurantLocation = await _db.RestaurantLocations.Where(x=>x.RestaurantId==id).FirstOrDefaultAsync();
+            if (RestaurantLocation == null)
+                return NotFound();
+
+            return RestaurantLocation;
+        }
+
 
         [HttpPost]
         public async Task<ActionResult<RestaurantLocation>> Post(RestaurantLocation RestaurantLocation)
