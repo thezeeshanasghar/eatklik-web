@@ -22,13 +22,13 @@ namespace eatklik.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Coordinates>>> GetAll()
         {
-            return await _db.coordinates.ToListAsync();
+            return await _db.Coordinates.ToListAsync();
         }
 
         [HttpGet("{orderId}")]
         public async Task<ActionResult<Coordinates>> GetSingle(long orderId)
         {
-            var todoItem = await _db.coordinates.Where(x=>x.OrderId==orderId).FirstOrDefaultAsync();
+            var todoItem = await _db.Coordinates.Where(x=>x.OrderId==orderId).FirstOrDefaultAsync();
             if (todoItem == null)
                 return NotFound();
 
@@ -38,7 +38,7 @@ namespace eatklik.Controllers
          [HttpPost]
         public async Task<ActionResult<Coordinates>> Post(Coordinates coordinates)
         {
-            _db.coordinates.Update(coordinates);
+            _db.Coordinates.Update(coordinates);
             await _db.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetSingle), new { id = coordinates.Id }, coordinates);
@@ -60,12 +60,12 @@ namespace eatklik.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var coordinates = await _db.coordinates.FindAsync(id);
+            var coordinates = await _db.Coordinates.FindAsync(id);
 
             if (coordinates == null)
                 return NotFound();
 
-            _db.coordinates.Remove(coordinates);
+            _db.Coordinates.Remove(coordinates);
             await _db.SaveChangesAsync();
 
             return NoContent();
