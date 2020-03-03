@@ -41,7 +41,7 @@ namespace eatklik.Controllers
             _db.Coordinates.Update(coordinates);
             await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetSingle), new { id = coordinates.Id }, coordinates);
+            return CreatedAtAction(nameof(GetSingle), new { orderId = coordinates.OrderId }, coordinates);
         }
 
     [HttpPut("{id}")]

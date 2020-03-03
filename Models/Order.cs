@@ -29,9 +29,8 @@ namespace eatklik.Models
         public City City { get; set; }
 
         public long RestaurantId { get; set; }
-        [JsonIgnore]
-        public Restaurant Restaurant { get; set; }
-
+        
+        public virtual Restaurant Restaurant { get; set; }
         
         public long? RiderId { get; set; }
         [JsonIgnore]

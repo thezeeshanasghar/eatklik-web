@@ -33,7 +33,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Order>> GetSingle(int id)
         {
 
-            var dbOrder = await _db.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
+            var dbOrder = await _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -44,7 +44,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Where(x => x.Id == id).ToListAsync();
+            var dbOrder = await _db.Orders.Where(x => x.RiderId == id).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -55,7 +55,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetCompleteOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Where(x => x.Id == id && x.OrderStatus == OrderStatus.Complete).ToListAsync();
+            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Complete).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -88,7 +88,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetNewOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Assigned).ToListAsync();
+            var dbOrder = await _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Assigned).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -99,7 +99,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetPendingOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.RiderAccepted).ToListAsync();
+            var dbOrder = await _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.RiderAccepted).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
