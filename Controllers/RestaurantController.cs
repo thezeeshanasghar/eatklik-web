@@ -140,7 +140,7 @@ namespace eatklik.Controllers
             foreach (var loc in RestaurantLocation)
             {
                 var distance = CalculateDistance(lat , lng , loc.Latitude , loc.Longitude);
-                if (distance <= 5)
+                if (distance <= loc.DelRadius)
                 {
                 var rest = await _db.Restaurants.Include(x=>x.RestaurantCuisines).Where(x=> x.Id == loc.RestaurantId).FirstOrDefaultAsync();
                restaurant.Add(rest);
