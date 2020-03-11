@@ -69,14 +69,14 @@ namespace eatklik.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id}/city")]
-        public async Task<ActionResult<City>> GetPromotionCity(long id)
+        [HttpGet("city/{id}")]
+        public async Task<ActionResult<ICollection<Promotion>>> GetPromotionsbyCity(long id)
         {
-            var promotion = await _db.Promotions.Include(x => x.City).FirstOrDefaultAsync(x => x.Id == id);
+            var promotion = await _db.Promotions.Where(x => x.CityId == id).ToListAsync();
             if (promotion == null)
                 return NotFound();
 
-            return promotion.City;
+            return promotion;
         }
     }
 }
