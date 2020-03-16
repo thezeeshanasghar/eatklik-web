@@ -15,9 +15,9 @@ namespace eatklik.Models
         public string ImagePath {get;set;}
         public string Address {get;set;}
         public Status Status {get;set;}
-        public long CityId {get;set;}
-        [JsonIgnore]
-        public City City {get;set;}
+        // public long CityId {get;set;}
+        // [JsonIgnore]
+        // public City City {get;set;}
 
       //  public virtual ICollection<Review> RestaurantReviews {get;set;}
         public virtual ICollection<Order> CustomerOrders {get;set;}

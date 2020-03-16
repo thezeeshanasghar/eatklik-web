@@ -64,7 +64,7 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Rider>> Post(Rider rider)
         {
-            rider.Rating = 0;
+          
             _db.Riders.Update(rider);
             await _db.SaveChangesAsync();
 
