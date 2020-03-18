@@ -96,7 +96,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Customer>> Login(Customer postedCustomer)
         {
             var dbCustomer = await _db.Customers.FirstOrDefaultAsync(x => x.Email == postedCustomer.Email
-                    && x.Password == postedCustomer.Password);
+                    && x.Password == postedCustomer.Password && x.Status==Status.Enable);
             if (dbCustomer == null)
                 return NotFound(new { message = "Invalid Email or Password." });
 
