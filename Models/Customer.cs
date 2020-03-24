@@ -21,6 +21,7 @@ namespace eatklik.Models
 
       //  public virtual ICollection<Review> RestaurantReviews {get;set;}
         public virtual ICollection<Order> CustomerOrders {get;set;}
+      public virtual ICollection<UserAuthentication> UserAuthentication {get;set;}
     }
 
 }

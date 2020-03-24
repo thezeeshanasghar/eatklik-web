@@ -33,7 +33,7 @@ namespace eatklik.Models
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<RestaurantExtraItem> RestaurantExtraItems { get; set; }
         public DbSet<Coordinates> Coordinates { get; set; }
-        
+            public DbSet<UserAuthentication> UserAuthentication { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RestaurantCuisine>()

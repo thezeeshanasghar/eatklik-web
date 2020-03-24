@@ -8,8 +8,7 @@ using eatklik.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-
+using Newtonsoft.Json;  
 namespace eatklik.Controllers
 {
 
@@ -58,8 +57,20 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Customer>> Post(Customer Customer)
         {
             _db.Customers.Update(Customer);
+           
+            await _db.SaveChangesAsync();
+//------------------------------------------------
+
+    UserAuthentication UserAuthentication=new UserAuthentication();
+             Random random = new Random();
+             UserAuthentication.Code= random.Next(99999).ToString();
+             UserAuthentication.UserId=Customer.Id;
+             UserAuthentication.IsVerified=0;
+             UserAuthentication.Type="Customer";
+            _db.UserAuthentication.Update(UserAuthentication);
             await _db.SaveChangesAsync();
 
+//-------------------------------------------------
             return CreatedAtAction(nameof(GetSingle), new { id = Customer.Id }, Customer);
         }
 
@@ -95,7 +106,7 @@ namespace eatklik.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<Customer>> Login(Customer postedCustomer)
         {
-            var dbCustomer = await _db.Customers.FirstOrDefaultAsync(x => x.Email == postedCustomer.Email
+            var dbCustomer = await _db.Customers.Include(x=>x.UserAuthentication).FirstOrDefaultAsync(x => x.Email == postedCustomer.Email
                     && x.Password == postedCustomer.Password && x.Status==Status.Enable);
             if (dbCustomer == null)
                 return NotFound(new { message = "Invalid Email or Password." });
@@ -143,6 +154,7 @@ namespace eatklik.Controllers
             return dbCustomer;
 
         }
+
 
         #endregion  EK-CUSTOMER
 
