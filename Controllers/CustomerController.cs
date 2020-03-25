@@ -56,6 +56,7 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> Post(Customer Customer)
         {
+            
             _db.Customers.Update(Customer);
            
             await _db.SaveChangesAsync();
@@ -64,7 +65,7 @@ namespace eatklik.Controllers
     UserAuthentication UserAuthentication=new UserAuthentication();
              Random random = new Random();
              UserAuthentication.Code= random.Next(99999).ToString();
-             UserAuthentication.UserId=Customer.Id;
+             UserAuthentication.CustomerId=Customer.Id;
              UserAuthentication.IsVerified=0;
              UserAuthentication.Type="Customer";
             _db.UserAuthentication.Update(UserAuthentication);
@@ -114,6 +115,21 @@ namespace eatklik.Controllers
             return dbCustomer;
         }
 
+
+        [HttpPut("VerifyCustomer/{id}")]
+        public async Task<ActionResult<Customer>> VerifyCustomer(int id,string Code)
+        {
+        
+              var dbVerify = await _db.UserAuthentication.FirstOrDefaultAsync(x => x.CustomerId == id && x.Type=="Customer");
+            if (dbVerify == null)
+                return NotFound();
+            dbVerify.IsVerified = 1;
+            _db.Entry(dbVerify).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+
+            var dbCustomer = await _db.Customers.Include(x => x.UserAuthentication).FirstOrDefaultAsync(x => x.Id == id );
+            return dbCustomer;
+        }
         [HttpGet("{customerId}/orders")]
         public async Task<ActionResult<IEnumerable<Order>>> GetCustomerOrders(int customerId)
         {
