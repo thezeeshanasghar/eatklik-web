@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using eatklik.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace eatklik.Controllers
 {
@@ -21,6 +22,17 @@ namespace eatklik.Controllers
             _db.Users.Update(postedUser);
             await _db.SaveChangesAsync();
             return postedUser;
+        }
+           [HttpGet("{UserName}/{Password}")]
+        public async Task<ActionResult<User>> Login(string UserName,string Password)
+        {
+
+            var User = await _db.Users.FirstOrDefaultAsync(x=>x.UserName==UserName && x.Password == Password);
+                 
+            if (User == null)
+                return NotFound(new { message = "Invalid Email or Password." });
+
+            return User;
         }
     }
 }
