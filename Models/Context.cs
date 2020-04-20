@@ -33,7 +33,7 @@ namespace eatklik.Models
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<RestaurantExtraItem> RestaurantExtraItems { get; set; }
         public DbSet<Coordinates> Coordinates { get; set; }
-            public DbSet<UserAuthentication> UserAuthentication { get; set; }
+            // public DbSet<UserAuthentication> UserAuthentication { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RestaurantCuisine>()
@@ -44,12 +44,14 @@ namespace eatklik.Models
             modelBuilder.Entity<User>().HasData(
            new User
           {
-            FirstName="xxx",
-            LastName="xxx",
-            MobileNumber="xxx",
-            Password="xxx",
-            ProfileImage="xxx",
-            UserName="xxx"
+              Id=1,
+            FirstName="User",
+            LastName="User",
+            MobileNumber="0335478658",
+            Password="12345678",
+            ProfileImage="null",
+            UserName="Uer",
+            UserType="SuperAdmin"
           }
         );
             

@@ -56,22 +56,25 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> Post(Customer Customer)
         {
-            
+         Random random = new Random();
+
+             Customer.Code= random.Next(999);
+             Customer.IsVerified=0;
             _db.Customers.Update(Customer);
            
             await _db.SaveChangesAsync();
-//------------------------------------------------
+// //------------------------------------------------
 
-    UserAuthentication UserAuthentication=new UserAuthentication();
-             Random random = new Random();
-             UserAuthentication.Code= random.Next(99999).ToString();
-             UserAuthentication.CustomerId=Customer.Id;
-             UserAuthentication.IsVerified=0;
-             UserAuthentication.Type="Customer";
-            _db.UserAuthentication.Update(UserAuthentication);
-            await _db.SaveChangesAsync();
+//     UserAuthentication UserAuthentication=new UserAuthentication();
+//              Random random = new Random();
+//              UserAuthentication.Code= random.Next(99999).ToString();
+//              UserAuthentication.PersonId=Customer.Id;
+//              UserAuthentication.IsVerified=0;
+//              UserAuthentication.Type="Customer";
+//             _db.UserAuthentication.Update(UserAuthentication);
+//             await _db.SaveChangesAsync();
 
-//-------------------------------------------------
+// //-------------------------------------------------
             return CreatedAtAction(nameof(GetSingle), new { id = Customer.Id }, Customer);
         }
 
@@ -107,8 +110,9 @@ namespace eatklik.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<Customer>> Login(Customer postedCustomer)
         {
-            var dbCustomer = await _db.Customers.Include(x=>x.UserAuthentication).FirstOrDefaultAsync(x => x.Email == postedCustomer.Email
-                    && x.Password == postedCustomer.Password && x.Status==Status.Enable);
+
+            var dbCustomer = await _db.Customers.FirstOrDefaultAsync(x=>x.Email==postedCustomer.Email && x.Password == postedCustomer.Password && x.Status==Status.Enable);//c(x => x.Email == postedCustomer.Email
+                 
             if (dbCustomer == null)
                 return NotFound(new { message = "Invalid Email or Password." });
 
@@ -120,14 +124,20 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Customer>> VerifyCustomer(int id,string Code)
         {
         
-              var dbVerify = await _db.UserAuthentication.FirstOrDefaultAsync(x => x.CustomerId == id && x.Type=="Customer");
-            if (dbVerify == null)
-                return NotFound();
+              var dbVerify = await _db.Customers.FirstOrDefaultAsync(x =>  x.Id==id  );
+          
+            if (dbVerify == null && dbVerify.Code==int.Parse(Code)){
+                        Console.WriteLine(dbVerify.Code);
+
+              return NotFound();
+
+            }
+              
             dbVerify.IsVerified = 1;
             _db.Entry(dbVerify).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 
-            var dbCustomer = await _db.Customers.Include(x => x.UserAuthentication).FirstOrDefaultAsync(x => x.Id == id );
+            var dbCustomer = await _db.Customers.FirstOrDefaultAsync(x => x.Id == id );
             return dbCustomer;
         }
         [HttpGet("{customerId}/orders")]

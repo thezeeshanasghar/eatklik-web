@@ -64,43 +64,46 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Rider>> Post(Rider rider)
         {
-          
+                       Random random = new Random();
+            rider.Code=random.Next(999);
+            rider.IsVerified=0;
+
             _db.Riders.Update(rider);
             await _db.SaveChangesAsync();
 //------------------------------------------------
 
-    UserAuthentication UserAuthentication=new UserAuthentication();
-             Random random = new Random();
-             UserAuthentication.Code= random.Next(99999).ToString();
-             UserAuthentication.RiderId=rider.Id;
-             UserAuthentication.IsVerified=0;
-             UserAuthentication.Type="Rider";
-            _db.UserAuthentication.Update(UserAuthentication);
-            await _db.SaveChangesAsync();
+    // UserAuthentication UserAuthentication=new UserAuthentication();
+    //          Random random = new Random();
+    //          UserAuthentication.Code= random.Next(99999).ToString();
+    //          UserAuthentication.PersonId=rider.Id;
+    //          UserAuthentication.IsVerified=0;
+    //          UserAuthentication.Type="Rider";
+    //         _db.UserAuthentication.Update(UserAuthentication);
+    //         await _db.SaveChangesAsync();
 
 //-------------------------------------------------
             return CreatedAtAction(nameof(GetSingle), new { id = rider.Id }, rider);
         }
 
 
-        [HttpPut("VerifyRider/{id}")]
-        public async Task<ActionResult<Rider>> VerifyRider(int id,string Code)
+        [HttpPut("VerifyRider/{id}/{Code}")]
+        public async Task<ActionResult<Rider>> VerifyRider(int id,int Code)
         {
-        
-              var dbVerify = await _db.UserAuthentication.FirstOrDefaultAsync(x => x.RiderId == id && x.Type=="Rider");
-            if (dbVerify == null)
+        Console.WriteLine(Code);
+              var dbVerify = await _db.Riders.FirstOrDefaultAsync(x => x.Id == id );
+            if (dbVerify == null || dbVerify.Code!=Code)
                 return NotFound();
             dbVerify.IsVerified = 1;
             _db.Entry(dbVerify).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 
-            var dbRider = await _db.Riders.Include(x => x.UserAuthentication).FirstOrDefaultAsync(x => x.Id == id );
+            var dbRider = await _db.Riders.FirstOrDefaultAsync(x => x.Id == id );
             return dbRider;
         }
         [HttpPost("login")]
         public ActionResult<Rider> Login(Rider postedRider)
         {
-            var dbRider = _db.Riders.Include(x=>x.UserAuthentication).FirstOrDefault(x => x.MobileNo == postedRider.MobileNo
+            var dbRider = _db.Riders.FirstOrDefault(x => x.MobileNo == postedRider.MobileNo
             && x.Password == postedRider.Password);
             if (dbRider == null)
                 return NotFound();

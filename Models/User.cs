@@ -13,7 +13,8 @@ namespace eatklik.Models
         public string UserName { get; set; }
         public string Password { get; set; }
         public string ProfileImage { get; set; }
-
+        public string UserType { get; set; }
+        
     }
 
 }
