@@ -34,17 +34,31 @@ namespace eatklik.Models
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<RestaurantExtraItem> RestaurantExtraItems { get; set; }
         public DbSet<Coordinates> Coordinates { get; set; }
-        
+            public DbSet<UserAuthentication> UserAuthentication { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RestaurantCuisine>()
                 .HasKey(bc => new { bc.RestaurantId, bc.CuisineId });
             modelBuilder.Entity<OrderItem>()
            .HasKey(bc => new { bc.Id });
+
+            modelBuilder.Entity<User>().HasData(
+           new User
+          {
+            FirstName="xxx",
+            LastName="xxx",
+            MobileNumber="xxx",
+            Password="xxx",
+            ProfileImage="xxx",
+            UserName="xxx"
+          }
+        );
             
             modelBuilder.Entity<Restaurant>()
                             .Property(r => r.IsSponsor)
                             .HasConversion(new BoolToZeroOneConverter<Int16>());
+        
         }
+
     }
 }

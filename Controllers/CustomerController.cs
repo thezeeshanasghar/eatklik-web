@@ -8,8 +8,7 @@ using eatklik.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-
+using Newtonsoft.Json;  
 namespace eatklik.Controllers
 {
 
@@ -44,22 +43,35 @@ namespace eatklik.Controllers
             return Customer;
         }
         
-        [HttpGet("city/{cityId}")]
-        public async Task<ActionResult<ICollection<Customer>>> GetCustomerByCity(int cityId)
-        {
-            var dbCustomers = await _db.Customers.Where(x => x.CityId == cityId).ToListAsync();
-            if (dbCustomers == null)
-                return NotFound();
-            return dbCustomers;
+        // [HttpGet("city/{cityId}")]
+        // public async Task<ActionResult<ICollection<Customer>>> GetCustomerByCity(int cityId)
+        // {
+        //     var dbCustomers = await _db.Customers.Where(x => x.CityId == cityId).ToListAsync();
+        //     if (dbCustomers == null)
+        //         return NotFound();
+        //     return dbCustomers;
 
-        }
+        // }
 
         [HttpPost]
         public async Task<ActionResult<Customer>> Post(Customer Customer)
         {
+            
             _db.Customers.Update(Customer);
+           
+            await _db.SaveChangesAsync();
+//------------------------------------------------
+
+    UserAuthentication UserAuthentication=new UserAuthentication();
+             Random random = new Random();
+             UserAuthentication.Code= random.Next(99999).ToString();
+             UserAuthentication.CustomerId=Customer.Id;
+             UserAuthentication.IsVerified=0;
+             UserAuthentication.Type="Customer";
+            _db.UserAuthentication.Update(UserAuthentication);
             await _db.SaveChangesAsync();
 
+//-------------------------------------------------
             return CreatedAtAction(nameof(GetSingle), new { id = Customer.Id }, Customer);
         }
 
@@ -95,14 +107,29 @@ namespace eatklik.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<Customer>> Login(Customer postedCustomer)
         {
-            var dbCustomer = await _db.Customers.FirstOrDefaultAsync(x => x.Email == postedCustomer.Email
-                    && x.Password == postedCustomer.Password);
+            var dbCustomer = await _db.Customers.Include(x=>x.UserAuthentication).FirstOrDefaultAsync(x => x.Email == postedCustomer.Email
+                    && x.Password == postedCustomer.Password && x.Status==Status.Enable);
             if (dbCustomer == null)
                 return NotFound(new { message = "Invalid Email or Password." });
 
             return dbCustomer;
         }
 
+
+        [HttpPut("VerifyCustomer/{id}")]
+        public async Task<ActionResult<Customer>> VerifyCustomer(int id,string Code)
+        {
+        
+              var dbVerify = await _db.UserAuthentication.FirstOrDefaultAsync(x => x.CustomerId == id && x.Type=="Customer");
+            if (dbVerify == null)
+                return NotFound();
+            dbVerify.IsVerified = 1;
+            _db.Entry(dbVerify).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+
+            var dbCustomer = await _db.Customers.Include(x => x.UserAuthentication).FirstOrDefaultAsync(x => x.Id == id );
+            return dbCustomer;
+        }
         [HttpGet("{customerId}/orders")]
         public async Task<ActionResult<IEnumerable<Order>>> GetCustomerOrders(int customerId)
         {
@@ -143,6 +170,7 @@ namespace eatklik.Controllers
             return dbCustomer;
 
         }
+
 
         #endregion  EK-CUSTOMER
 

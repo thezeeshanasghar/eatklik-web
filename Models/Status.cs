@@ -6,8 +6,9 @@ namespace eatklik.Models
 
     public enum Status
     {
-        Enable,
-        Disable
+        Disable,
+        Enable
+     
     }
 
     
