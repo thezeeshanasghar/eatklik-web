@@ -40,10 +40,24 @@ namespace eatklik.Models
                 .HasKey(bc => new { bc.RestaurantId, bc.CuisineId });
             modelBuilder.Entity<OrderItem>()
            .HasKey(bc => new { bc.Id });
+
+            modelBuilder.Entity<User>().HasData(
+           new User
+          {
+            FirstName="xxx",
+            LastName="xxx",
+            MobileNumber="xxx",
+            Password="xxx",
+            ProfileImage="xxx",
+            UserName="xxx"
+          }
+        );
             
             modelBuilder.Entity<Restaurant>()
                             .Property(r => r.IsSponsor)
                             .HasConversion(new BoolToZeroOneConverter<Int16>());
+        
         }
+
     }
 }
