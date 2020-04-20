@@ -32,18 +32,18 @@ namespace eatklik.Controllers
             return Ok();
         }
 
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> Delete(long id)
-        // {
-        //     var RestaurantCuisine = await _db.RestaurantCuisines.FindAsync(id);
+        [HttpDelete("{resid}/{cuid}")]
+        public async Task<IActionResult> Delete(long resid , long cuid)
+        {
+            var RestaurantCuisine = await _db.RestaurantCuisines.Where(x=> x.RestaurantId == resid && x.CuisineId == cuid).FirstOrDefaultAsync();
 
-        //     if (RestaurantCuisine == null)
-        //         return NotFound();
+            if (RestaurantCuisine == null)
+                return NotFound();
 
-        //     _db.RestaurantCuisines.Remove(RestaurantCuisine);
-        //     await _db.SaveChangesAsync();
+            _db.RestaurantCuisines.Remove(RestaurantCuisine);
+            await _db.SaveChangesAsync();
 
-        //     return NoContent();
-        // }
+            return NoContent();
+        }
     }
 }
