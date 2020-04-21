@@ -143,6 +143,7 @@ namespace eatklik.Controllers
                 if (distance <= loc.DelRadius)
                 {
                 var rest = await _db.Restaurants.Include(x=>x.RestaurantCuisines).Where(x=> x.Id == loc.RestaurantId).FirstOrDefaultAsync();
+                rest.approximateTime = Convert.ToInt32((5 * distance));
                restaurant.Add(rest);
                 }
 

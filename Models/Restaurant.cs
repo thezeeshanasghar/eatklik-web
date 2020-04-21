@@ -35,6 +35,7 @@ namespace eatklik.Models
         public virtual ICollection<Menu> RestaurantMenus { get; set; }
         public decimal? Rating {get;set;}
         public int? reviewCount {get;set;}
+        public int? approximateTime {get; set;}
         public virtual ICollection<Review> CustomrReviews {get;set;}
 
     }
