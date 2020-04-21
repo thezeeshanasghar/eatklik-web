@@ -58,7 +58,7 @@ namespace eatklik.Controllers
         {
          Random random = new Random();
 
-             Customer.Code= random.Next(999);
+             Customer.Code= random.Next(9999);
              Customer.IsVerified=0;
             _db.Customers.Update(Customer);
            
@@ -123,7 +123,8 @@ namespace eatklik.Controllers
         [HttpPut("VerifyCustomer/{id}")]
         public async Task<ActionResult<Customer>> VerifyCustomer(int id,string Code)
         {
-        
+                 Random random = new Random();
+
               var dbVerify = await _db.Customers.FirstOrDefaultAsync(x =>  x.Id==id  );
           
             if (dbVerify == null && dbVerify.Code==int.Parse(Code)){
@@ -134,6 +135,8 @@ namespace eatklik.Controllers
             }
               
             dbVerify.IsVerified = 1;
+            dbVerify.Code= random.Next(9999);
+
             _db.Entry(dbVerify).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 
@@ -179,6 +182,13 @@ namespace eatklik.Controllers
             await _db.SaveChangesAsync();
             return dbCustomer;
 
+        }
+
+     [HttpGet("VerifyNumber/{Contact}")]
+        public async Task<ActionResult<Customer>> VerifyContact(string Contact)
+        {
+            var dbCustomer = await _db.Customers.FirstOrDefaultAsync(x => x.MobileNumber == Contact);
+            return dbCustomer;
         }
 
 

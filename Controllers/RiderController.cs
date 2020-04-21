@@ -65,7 +65,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Rider>> Post(Rider rider)
         {
                        Random random = new Random();
-            rider.Code=random.Next(999);
+            rider.Code=random.Next(9999);
             rider.IsVerified=0;
 
             _db.Riders.Update(rider);
@@ -89,11 +89,14 @@ namespace eatklik.Controllers
         [HttpPut("VerifyRider/{id}/{Code}")]
         public async Task<ActionResult<Rider>> VerifyRider(int id,int Code)
         {
+            
+                 Random random = new Random();
         Console.WriteLine(Code);
               var dbVerify = await _db.Riders.FirstOrDefaultAsync(x => x.Id == id );
             if (dbVerify == null || dbVerify.Code!=Code)
                 return NotFound();
             dbVerify.IsVerified = 1;
+            dbVerify.Code=random.Next(9999);
             _db.Entry(dbVerify).State = EntityState.Modified;
             await _db.SaveChangesAsync();
 
@@ -222,6 +225,13 @@ namespace eatklik.Controllers
             }
 
             return dbRiders;
+        }
+        
+     [HttpGet("VerifyNumber/{Contact}")]
+        public async Task<ActionResult<Rider>> VerifyContact(string Contact)
+        {
+            var dbRider = await _db.Riders.FirstOrDefaultAsync(x => x.MobileNo == Contact);
+            return dbRider;
         }
     }
 }
