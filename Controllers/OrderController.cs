@@ -204,6 +204,14 @@ namespace eatklik.Controllers
                 return NotFound();
             return dbOrders;
         }
+            [HttpGet("OrderItem/{OrderId}")]
+        public async Task<ActionResult<ICollection<OrderItem>>> GetOrderItem(int OrderId)
+        {
+            var dbOrders = await _db.OrderItems.Where(x => x.Order.Id == OrderId).ToListAsync();
+            if (dbOrders == null)
+                return NotFound();
+            return dbOrders;
+        }
           
 
     }
