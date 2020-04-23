@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -78,6 +79,16 @@ namespace eatklik.Controllers
             await _db.SaveChangesAsync();
 
             return NoContent();
+        }
+           [HttpGet("ActiveCoupon")]
+        public async Task<ActionResult<IEnumerable<CouponCode>>> GetActiveCoupon()
+        {
+            
+            var todoItem = await _db.CouponCodes.Where(x=>x.ValidTill>=DateTime.Now).ToListAsync();
+            if (todoItem == null)
+                return NotFound();
+
+            return todoItem;
         }
     }
 }
