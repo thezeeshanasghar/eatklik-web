@@ -111,10 +111,10 @@ namespace eatklik.Controllers
         public async Task<ActionResult<Customer>> Login(Customer postedCustomer)
         {
 
-            var dbCustomer = await _db.Customers.FirstOrDefaultAsync(x=>x.Email==postedCustomer.Email && x.Password == postedCustomer.Password && x.Status==Status.Enable);//c(x => x.Email == postedCustomer.Email
+            var dbCustomer = await _db.Customers.FirstOrDefaultAsync(x=>x.MobileNumber==postedCustomer.MobileNumber && x.Password == postedCustomer.Password && x.Status==Status.Enable);//c(x => x.Email == postedCustomer.Email
                  
             if (dbCustomer == null)
-                return NotFound(new { message = "Invalid Email or Password." });
+                return NotFound(new { message = "Invalid Mobile Number or Password." });
 
             return dbCustomer;
         }
