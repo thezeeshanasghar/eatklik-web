@@ -72,29 +72,30 @@ namespace eatklik.Controllers
             return NoContent();
         }
 
-        [HttpGet("sms/{Contact}/{Type}")]
-        public async Task<IActionResult> Sendsms(string Contact,string Type)
+        [HttpGet("sms/{id}/{Type}")]
+        public async Task<IActionResult> Sendsms(int id,string Type)
         {
 
             var customer = new Customer();
             var Rider = new Rider();
-            
+            var Contact="";
             var Code=0;
             if(Type=="Rider")
             {
-                Rider= await _db.Riders.Where(x=>x.MobileNo==Contact).FirstOrDefaultAsync();
+                Rider= await _db.Riders.Where(x=>x.Id==id).FirstOrDefaultAsync();
                 if(Rider!=null)
                 {
-
+                Contact=Rider.MobileNo;
                  Code=Rider.Code;
                 }
                   
             }else{
              
-               customer= await _db.Customers.Where(x=>x.MobileNumber==Contact).FirstOrDefaultAsync();
+               customer= await _db.Customers.Where(x=>x.Id==id).FirstOrDefaultAsync();
                if(customer!=null)
                 {
-               ;
+                 Contact=customer.MobileNumber;
+
                  Code=customer.Code;
                 }
             }
