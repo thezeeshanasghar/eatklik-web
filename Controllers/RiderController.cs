@@ -64,12 +64,19 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Rider>> Post(Rider rider)
         {
+             var verify=_db.Riders.Where(x=>x.MobileNo==rider.MobileNo).ToList();
+            if(verify.Count>0)
+            {
+            return StatusCode(404,"Contact Already Exist");
+
+            }else{
                        Random random = new Random();
             rider.Code=random.Next(9999);
             rider.IsVerified=0;
 
             _db.Riders.Update(rider);
             await _db.SaveChangesAsync();
+            }
 //------------------------------------------------
 
     // UserAuthentication UserAuthentication=new UserAuthentication();

@@ -56,13 +56,21 @@ namespace eatklik.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> Post(Customer Customer)
         {
-         Random random = new Random();
+            var verify=_db.Customers.Where(x=>x.MobileNumber==Customer.MobileNumber).ToList();
+            if(verify.Count>0)
+            {
+            return StatusCode(404,"Contact Already Exist");
 
+            }else{
+            Random random = new Random();
              Customer.Code= random.Next(9999);
              Customer.IsVerified=0;
             _db.Customers.Update(Customer);
            
             await _db.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetSingle), new { id = Customer.Id }, Customer);
+            }
+     
 // //------------------------------------------------
 
 //     UserAuthentication UserAuthentication=new UserAuthentication();
@@ -75,7 +83,7 @@ namespace eatklik.Controllers
 //             await _db.SaveChangesAsync();
 
 // //-------------------------------------------------
-            return CreatedAtAction(nameof(GetSingle), new { id = Customer.Id }, Customer);
+        
         }
 
         [HttpPut("{id}")]
