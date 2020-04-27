@@ -98,14 +98,25 @@ namespace eatklik.Controllers
         [HttpGet("rider/{id}/pending")]
         public async Task<ActionResult<ICollection<Order>>> GetPendingOrdersByRider(int id)
         {
+            
 
-            var dbOrder = await _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.RiderAccepted).OrderByDescending(x=>x.Created).ToListAsync();
+            var dbOrder =await  _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.RiderAccepted).OrderByDescending(x=>x.Created).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
 
         }
+     [HttpGet("rider/{id}/OrderBydate/{param}")]
+        public async Task<ActionResult<ICollection<Order>>> GetPendingOrderByDate(int id,string param)
+        {
+            
+//
+            var dbOrder =await  _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.RiderAccepted  && DateTime.Parse(x.Created.ToShortDateString())==DateTime.Parse(param) ).OrderByDescending(x=>x.Created).ToListAsync();
+            if (dbOrder == null)
+                return NotFound();
+            return dbOrder;
 
+        }
         [HttpPost("customer-order")]
         public async Task<ActionResult<Order>> Post(Order postedOrder)
         {
