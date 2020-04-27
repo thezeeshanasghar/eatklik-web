@@ -44,7 +44,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Where(x => x.RiderId == id).ToListAsync();
+            var dbOrder = await _db.Orders.Where(x => x.RiderId == id).OrderByDescending(x=>x.Created).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -55,7 +55,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetCompleteOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Complete).ToListAsync();
+            var dbOrder = await _db.Orders.Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Complete).OrderByDescending(x=>x.Created).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -88,7 +88,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetNewOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Assigned).ToListAsync();
+            var dbOrder = await _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.Assigned).OrderByDescending(x=>x.Created).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -99,7 +99,7 @@ namespace eatklik.Controllers
         public async Task<ActionResult<ICollection<Order>>> GetPendingOrdersByRider(int id)
         {
 
-            var dbOrder = await _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.RiderAccepted).ToListAsync();
+            var dbOrder = await _db.Orders.Include(x=>x.Restaurant).ThenInclude(x=>x.RestaurantLocations).Where(x => x.RiderId == id && x.OrderStatus == OrderStatus.RiderAccepted).OrderByDescending(x=>x.Created).ToListAsync();
             if (dbOrder == null)
                 return NotFound();
             return dbOrder;
@@ -170,7 +170,7 @@ namespace eatklik.Controllers
         [HttpGet("city/{cityId}")]
         public async Task<ActionResult<ICollection<Order>>> GetOrderByCity(long cityId)
         {
-            var dbOrders = await _db.Orders.Where(x => x.CityId == cityId).ToListAsync();
+            var dbOrders = await _db.Orders.Where(x => x.CityId == cityId).OrderByDescending(x=>x.Created).ToListAsync();
             if (dbOrders == null)
                 return NotFound();
             return dbOrders;
@@ -190,7 +190,7 @@ namespace eatklik.Controllers
         [HttpGet("status/{orderStatus}")]
         public async Task<ActionResult<ICollection<Order>>> GetOrderByStatus(int orderStatus)
         {
-            var dbOrders = await _db.Orders.Where(x => x.OrderStatus == (OrderStatus)orderStatus).ToListAsync();
+            var dbOrders = await _db.Orders.Where(x => x.OrderStatus == (OrderStatus)orderStatus).OrderByDescending(x=>x.Created).ToListAsync();
             if (dbOrders == null)
                 return NotFound();
             return dbOrders;
@@ -199,7 +199,7 @@ namespace eatklik.Controllers
         [HttpGet("city/{cityId}/status/{orderStatus}")]
         public async Task<ActionResult<ICollection<Order>>> GetOrderByCityAndStatus(int cityId, int orderStatus)
         {
-            var dbOrders = await _db.Orders.Where(x => x.CityId == cityId && x.OrderStatus == (OrderStatus)orderStatus).ToListAsync();
+            var dbOrders = await _db.Orders.Where(x => x.CityId == cityId && x.OrderStatus == (OrderStatus)orderStatus).OrderByDescending(x=>x.Created).ToListAsync();
             if (dbOrders == null)
                 return NotFound();
             return dbOrders;
